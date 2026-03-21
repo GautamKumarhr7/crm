@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import cors from "cors";
 import Express from "express";
 import { HTTP_STATUS } from "./constant/http.constant";
 import { SERVER_MESSAGES } from "./constant/server.constant";
@@ -8,6 +9,8 @@ import { pool } from "./db/connection";
 import indexRouter from "./routes/index.routes";
 
 const app = Express();
+
+app.use(cors());
 app.use(Express.json());
 
 async function checkDatabaseHealth() {
