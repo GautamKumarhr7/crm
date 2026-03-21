@@ -1,0 +1,9 @@
+export const JWT_ENV_KEYS = {
+  ACCESS_TOKEN_SECRET: "ACCESS_TOKEN_SECRET",
+  REFRESH_TOKEN_SECRET: "REFRESH_TOKEN_SECRET",
+} as const;
+
+export const JWT_EXPIRES_IN = {
+  ACCESS_TOKEN: "15m",
+  REFRESH_TOKEN: "7d",
+} as const;

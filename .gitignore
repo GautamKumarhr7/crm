@@ -1,0 +1,8 @@
+/drizzle
+.env
+node_modules
+dist
+logs
+*.log
+*.env
+.DS_Store
