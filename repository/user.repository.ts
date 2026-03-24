@@ -1,3 +1,5 @@
+import { and, eq } from "drizzle-orm";
+
 import { db } from "../db/connection";
 import { Users } from "../db/schema";
 import { CreateEmployeeInput, UserModel } from "../type";
@@ -33,4 +35,13 @@ export async function createEmployeeByAdmin(
     .returning();
 
   return rows[0] as UserModel;
+}
+
+export async function getEmployeesByAdmin(
+  adminId: number,
+): Promise<UserModel[]> {
+  return db
+    .select()
+    .from(Users)
+    .where(and(eq(Users.adminId, adminId), eq(Users.type, "employee")));
 }

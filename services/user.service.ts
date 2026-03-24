@@ -1,7 +1,10 @@
 import { HTTP_STATUS } from "../constant/http.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
 import { findUserByEmail } from "../repository/auth.repository";
-import { createEmployeeByAdmin } from "../repository/user.repository";
+import {
+  createEmployeeByAdmin,
+  getEmployeesByAdmin,
+} from "../repository/user.repository";
 import {
   CreateEmployeeInput,
   ServiceResult,
@@ -53,5 +56,20 @@ export async function createEmployeeForAdmin(
       message: USER_MESSAGES.EMPLOYEE_CREATED_SUCCESSFULLY,
       user: userWithoutPassword,
     },
+  };
+}
+
+export async function getEmployeesForAdmin(
+  adminId: number,
+): Promise<ServiceResult<{ employees: UserWithoutPassword[] }>> {
+  const employees = await getEmployeesByAdmin(adminId);
+  const usersWithoutPasswords = employees.map(
+    ({ password: _password, ...user }) => user,
+  );
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: { employees: usersWithoutPasswords },
   };
 }
