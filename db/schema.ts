@@ -39,3 +39,59 @@ export const Users = pgTable("users", {
   age: integer("age"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const Projects = pgTable("projects", {
+  id: serial("id").primaryKey(),
+  code: varchar("code"),
+  name: varchar("name"),
+  client: varchar("client"),
+  category: varchar("category"),
+  value: doublePrecision("value"),
+  process: varchar("process"),
+  status: varchar("status"),
+  location: varchar("location"),
+  advancement: integer("advancement"),
+  startDate: date("start_date"),
+  endDate: date("end_date"),
+  employeeId: integer("employee_id").references((): AnyPgColumn => Users.id),
+  createdBy: integer("created_by").references((): AnyPgColumn => Users.id),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Bills = pgTable("bills", {
+  id: serial("id").primaryKey(),
+  code: varchar("code").unique(),
+  description: varchar("description"),
+  unit: integer("unit"),
+  contractAmount: doublePrecision("contract_amount"),
+  subrate: doublePrecision("subrate"),
+  poQuantity: doublePrecision("po_quantity"),
+  billedQuantity: doublePrecision("billed_quantity"),
+  noOfContract: integer("no_of_contract"),
+  diffValue: doublePrecision("diff_value"),
+  status: varchar("status"),
+  isDeleted: boolean("is_deleted").default(false),
+  createdBy: integer("created_by").references((): AnyPgColumn => Users.id),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Leaves = pgTable("leaves", {
+  id: serial("id").primaryKey(),
+  type: varchar("type"),
+  total: integer("total"),
+});
+
+export const LeaveAllocations = pgTable("leave_allocations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references((): AnyPgColumn => Users.id),
+  leaveId: integer("leave_id").references((): AnyPgColumn => Leaves.id),
+  status: varchar("status"),
+  taken: integer("taken"),
+  reason: varchar("reason"),
+});

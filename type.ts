@@ -1,6 +1,6 @@
 import { InferSelectModel } from "drizzle-orm";
 
-import { Users } from "./db/schema";
+import { Bills, LeaveAllocations, Leaves, Projects, Users } from "./db/schema";
 import type { AuthPayload } from "./utils/jwt";
 
 export type LoginInput = {
@@ -50,4 +50,51 @@ export type CreateEmployeeInput = {
   esiDeduction?: boolean;
   uanNumber?: string;
   age?: number;
+};
+
+export type ProjectModel = InferSelectModel<typeof Projects>;
+export type BillModel = InferSelectModel<typeof Bills>;
+export type LeaveModel = InferSelectModel<typeof Leaves>;
+export type LeaveAllocationModel = InferSelectModel<typeof LeaveAllocations>;
+
+export type CreateProjectInput = {
+  code?: string;
+  name?: string;
+  client?: string;
+  category?: string;
+  value?: number;
+  process?: string;
+  status?: string;
+  location?: string;
+  advancement?: number;
+  startDate?: string;
+  endDate?: string;
+  employeeId?: number;
+};
+
+export type CreateBillInput = {
+  code?: string;
+  description?: string;
+  unit?: number;
+  contractAmount?: number;
+  subrate?: number;
+  poQuantity?: number;
+  billedQuantity?: number;
+  noOfContract?: number;
+  diffValue?: number;
+  status?: string;
+  isDeleted?: boolean;
+};
+
+export type CreateLeaveInput = {
+  type?: string;
+  total?: number;
+};
+
+export type CreateLeaveAllocationInput = {
+  userId?: number;
+  leaveId?: number;
+  status?: string;
+  taken?: number;
+  reason?: string;
 };
