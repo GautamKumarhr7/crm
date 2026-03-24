@@ -1,6 +1,15 @@
 import { InferSelectModel } from "drizzle-orm";
 
-import { Bills, LeaveAllocations, Leaves, Projects, Users } from "./db/schema";
+import {
+  Bills,
+  LeaveAllocations,
+  Leaves,
+  Milestones,
+  Projects,
+  Sites,
+  Users,
+  Works,
+} from "./db/schema";
 import type { AuthPayload } from "./utils/jwt";
 
 export type LoginInput = {
@@ -56,6 +65,9 @@ export type ProjectModel = InferSelectModel<typeof Projects>;
 export type BillModel = InferSelectModel<typeof Bills>;
 export type LeaveModel = InferSelectModel<typeof Leaves>;
 export type LeaveAllocationModel = InferSelectModel<typeof LeaveAllocations>;
+export type SiteModel = InferSelectModel<typeof Sites>;
+export type WorkModel = InferSelectModel<typeof Works>;
+export type MilestoneModel = InferSelectModel<typeof Milestones>;
 
 export type CreateProjectInput = {
   code?: string;
@@ -97,4 +109,38 @@ export type CreateLeaveAllocationInput = {
   status?: string;
   taken?: number;
   reason?: string;
+};
+
+export type CreateSiteInput = {
+  projectId?: number;
+  name?: string;
+  location?: string;
+  supervisor?: string;
+  count?: number;
+  budget?: number;
+  complexity?: string;
+  status?: string;
+  rating?: number;
+};
+
+export type CreateWorkInput = {
+  projectId?: number;
+  contractor?: string;
+  description?: string;
+  value?: number;
+  retention?: number;
+  startDate?: string;
+  target?: string;
+  type?: string;
+  status?: string;
+};
+
+export type CreateMilestoneInput = {
+  siteId?: number;
+  title?: string;
+  startDate?: string;
+  endDate?: string;
+  priority?: string;
+  status?: string;
+  completion?: number;
 };

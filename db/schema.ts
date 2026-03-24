@@ -95,3 +95,50 @@ export const LeaveAllocations = pgTable("leave_allocations", {
   taken: integer("taken"),
   reason: varchar("reason"),
 });
+
+export const Sites = pgTable("sites", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references((): AnyPgColumn => Projects.id),
+  name: varchar("name"),
+  location: varchar("location"),
+  supervisor: varchar("supervisor"),
+  count: integer("count"),
+  budget: doublePrecision("budget"),
+  complexity: varchar("complexity"),
+  status: varchar("status"),
+  rating: integer("rating"),
+  createdBy: integer("created_by").references((): AnyPgColumn => Users.id),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Works = pgTable("works", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id").references((): AnyPgColumn => Projects.id),
+  contractor: varchar("contractor"),
+  description: varchar("description"),
+  value: doublePrecision("value"),
+  retention: doublePrecision("retention"),
+  startDate: date("start_date"),
+  target: date("target"),
+  type: varchar("type"),
+  status: varchar("status"),
+  createdBy: integer("created_by").references((): AnyPgColumn => Users.id),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Milestones = pgTable("milestones", {
+  id: serial("id").primaryKey(),
+  siteId: integer("site_id").references((): AnyPgColumn => Sites.id),
+  title: varchar("title"),
+  startDate: date("start_date"),
+  endDate: date("end_date"),
+  priority: varchar("priority"),
+  status: varchar("status"),
+  completion: integer("completion"),
+});
