@@ -99,16 +99,32 @@ export type CreateBillInput = {
 };
 
 export type CreateLeaveInput = {
+  userId?: number;
   type?: string;
-  total?: number;
+  title?: string;
+  reason?: string;
+  createdBy?: number;
+};
+
+export type ApproveLeaveInput = {
+  leaveId?: number;
+  approvedBy?: number;
+};
+
+export type RejectLeaveInput = {
+  leaveId?: number;
+  rejectionReason?: string;
+  approvedBy?: number;
 };
 
 export type CreateLeaveAllocationInput = {
   userId?: number;
-  leaveId?: number;
-  status?: string;
-  taken?: number;
-  reason?: string;
+  sick?: number;
+  casual?: number;
+  annual?: number;
+  company?: number;
+  other?: number;
+  createdBy?: number;
 };
 
 export type CreateSiteInput = {

@@ -83,17 +83,41 @@ export const Bills = pgTable("bills", {
 
 export const Leaves = pgTable("leaves", {
   id: serial("id").primaryKey(),
-  type: varchar("type"),
-  total: integer("total"),
+  userId: integer("user_id")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  type: varchar("type").default("casual").notNull(),
+  title: varchar("title").notNull(),
+  reason: varchar("reason").notNull(),
+  status: varchar("status").default("pending").notNull(),
+  approvedBy: integer("approved_by").references((): AnyPgColumn => Users.id),
+  rejectionReason: varchar("rejection_reason"),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const LeaveAllocations = pgTable("leave_allocations", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references((): AnyPgColumn => Users.id),
-  leaveId: integer("leave_id").references((): AnyPgColumn => Leaves.id),
-  status: varchar("status"),
-  taken: integer("taken"),
-  reason: varchar("reason"),
+  userId: integer("user_id")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  sick: integer("sick").default(0),
+  casual: integer("casual").default(0),
+  annual: integer("annual").default(0),
+  company: integer("company").default(0),
+  other: integer("other").default(0),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const Sites = pgTable("sites", {
