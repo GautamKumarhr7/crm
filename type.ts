@@ -1,10 +1,14 @@
 import { InferSelectModel } from "drizzle-orm";
 
 import {
+  Accounts,
   Bills,
+  Invoices,
   LeaveAllocations,
   Leaves,
+  MaterialReconciliations,
   Milestones,
+  Procurements,
   Projects,
   Sites,
   Users,
@@ -62,7 +66,13 @@ export type CreateEmployeeInput = {
 };
 
 export type ProjectModel = InferSelectModel<typeof Projects>;
+export type AccountModel = InferSelectModel<typeof Accounts>;
 export type BillModel = InferSelectModel<typeof Bills>;
+export type InvoiceModel = InferSelectModel<typeof Invoices>;
+export type ProcurementModel = InferSelectModel<typeof Procurements>;
+export type MaterialReconciliationModel = InferSelectModel<
+  typeof MaterialReconciliations
+>;
 export type LeaveModel = InferSelectModel<typeof Leaves>;
 export type LeaveAllocationModel = InferSelectModel<typeof LeaveAllocations>;
 export type SiteModel = InferSelectModel<typeof Sites>;
@@ -96,6 +106,51 @@ export type CreateBillInput = {
   diffValue?: number;
   status?: string;
   isDeleted?: boolean;
+};
+
+export type CreateAccountInput = {
+  code?: string;
+  name?: string;
+  type?: string;
+  balance?: number;
+  parents?: string;
+};
+
+export type CreateInvoiceInput = {
+  invoiceId?: string;
+  projectId?: number;
+  clientOrProject?: string;
+  type?: string;
+  date?: string;
+  gst?: number;
+  retention?: number;
+  amount?: number;
+  status?: string;
+};
+
+export type CreateProcurementInput = {
+  poNumber?: string;
+  vendor?: string;
+  items?: string;
+  amount?: number;
+  raised?: string;
+  expectedDelivery?: string;
+  progress?: string;
+  status?: string;
+};
+
+export type CreateMaterialReconciliationInput = {
+  billCode?: string;
+  description?: string;
+  unit?: string;
+  contRate?: number;
+  subRate?: number;
+  poQty?: number;
+  billedQty?: number;
+  contTotal?: number;
+  diffQty?: number;
+  diffValue?: number;
+  status?: string;
 };
 
 export type CreateLeaveInput = {

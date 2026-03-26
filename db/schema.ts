@@ -81,6 +81,82 @@ export const Bills = pgTable("bills", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const Procurements = pgTable("procurements", {
+  id: serial("id").primaryKey(),
+  poNumber: varchar("po_number").notNull().unique(),
+  vendor: varchar("vendor").notNull(),
+  items: varchar("items").notNull(),
+  amount: doublePrecision("amount").notNull(),
+  raised: date("raised").notNull(),
+  expectedDelivery: date("expected_delivery").notNull(),
+  progress: varchar("progress").notNull(),
+  status: varchar("status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const MaterialReconciliations = pgTable("material_reconciliations", {
+  id: serial("id").primaryKey(),
+  billCode: varchar("bill_code").notNull(),
+  description: varchar("description").notNull(),
+  unit: varchar("unit").notNull(),
+  contRate: doublePrecision("cont_rate").notNull(),
+  subRate: doublePrecision("sub_rate").notNull(),
+  poQty: doublePrecision("po_qty").notNull(),
+  billedQty: doublePrecision("billed_qty").notNull(),
+  contTotal: doublePrecision("cont_total").notNull(),
+  diffQty: doublePrecision("diff_qty").notNull(),
+  diffValue: doublePrecision("diff_value").notNull(),
+  status: varchar("status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Invoices = pgTable("invoices", {
+  id: serial("id").primaryKey(),
+  invoiceId: varchar("invoice_id").notNull().unique(),
+  projectId: integer("project_id")
+    .references((): AnyPgColumn => Projects.id)
+    .notNull(),
+  clientOrProject: varchar("client_or_project").notNull(),
+  type: varchar("type").notNull(),
+  date: date("date").notNull(),
+  gst: doublePrecision("gst").default(18).notNull(),
+  retention: doublePrecision("retention").default(0).notNull(),
+  amount: doublePrecision("amount").notNull(),
+  status: varchar("status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Accounts = pgTable("accounts", {
+  id: serial("id").primaryKey(),
+  code: varchar("code").notNull().unique(),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(),
+  balance: doublePrecision("balance").default(0).notNull(),
+  parents: varchar("parents"),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const Leaves = pgTable("leaves", {
   id: serial("id").primaryKey(),
   userId: integer("user_id")
