@@ -11,6 +11,7 @@ import milestoneRouter from "./milestone.routes";
 import procurementRouter from "./procurement.routes";
 import projectRouter from "./project.routes";
 import siteRouter from "./site.routes";
+import tenderRouter from "./tender.routes";
 import userRouter from "./user.routes";
 import workRouter from "./work.routes";
 
@@ -26,6 +27,7 @@ indexRouter.use("/leaves", leaveRouter);
 indexRouter.use("/leave-allocations", leaveAllocateRouter);
 indexRouter.use("/procurements", procurementRouter);
 indexRouter.use("/material-reconciliations", materialReconciliationRouter);
+indexRouter.use("/tenders", tenderRouter);
 indexRouter.use("/sites", siteRouter);
 indexRouter.use("/works", workRouter);
 indexRouter.use("/milestones", milestoneRouter);

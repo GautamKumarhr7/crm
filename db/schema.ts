@@ -157,6 +157,25 @@ export const Accounts = pgTable("accounts", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const Tenders = pgTable("tenders", {
+  id: serial("id").primaryKey(),
+  nameOfWork: varchar("name_of_work").notNull(),
+  natureOfWorkBriefDescription: varchar(
+    "nature_of_work_brief_description",
+  ).notNull(),
+  clientNameAddress: varchar("client_name_address").notNull(),
+  contractNo: varchar("contract_no").notNull().unique(),
+  value: doublePrecision("value").notNull(),
+  date: date("date").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const Leaves = pgTable("leaves", {
   id: serial("id").primaryKey(),
   userId: integer("user_id")

@@ -11,6 +11,7 @@ import {
   Procurements,
   Projects,
   Sites,
+  Tenders,
   Users,
   Works,
 } from "./db/schema";
@@ -70,6 +71,7 @@ export type AccountModel = InferSelectModel<typeof Accounts>;
 export type BillModel = InferSelectModel<typeof Bills>;
 export type InvoiceModel = InferSelectModel<typeof Invoices>;
 export type ProcurementModel = InferSelectModel<typeof Procurements>;
+export type TenderModel = InferSelectModel<typeof Tenders>;
 export type MaterialReconciliationModel = InferSelectModel<
   typeof MaterialReconciliations
 >;
@@ -137,6 +139,15 @@ export type CreateProcurementInput = {
   expectedDelivery?: string;
   progress?: string;
   status?: string;
+};
+
+export type CreateTenderInput = {
+  nameOfWork?: string;
+  natureOfWorkBriefDescription?: string;
+  clientNameAddress?: string;
+  contractNo?: string;
+  value?: number;
+  date?: string;
 };
 
 export type CreateMaterialReconciliationInput = {

@@ -2,7 +2,9 @@ import { HTTP_STATUS } from "../constant/http.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
 import { findUserByEmail } from "../repository/auth.repository";
 import {
+  getEmployeById,
   createEmployeeByAdmin,
+  getEmployeByuserId,
   getEmployeesByAdmin,
 } from "../repository/user.repository";
 import {
@@ -71,5 +73,47 @@ export async function getEmployeesForAdmin(
     ok: true,
     status: HTTP_STATUS.OK,
     data: { employees: usersWithoutPasswords },
+  };
+}
+
+export async function getEmployeByuserIdForAdmin(
+  authUserId: number,
+  userId: number,
+  isAdmin: boolean,
+): Promise<ServiceResult<{ employee: UserWithoutPassword }>> {
+  if (!userId) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "userId is required",
+    };
+  }
+
+  if (!isAdmin && authUserId !== userId) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.FORBIDDEN,
+      message: "You can only access your own profile",
+    };
+  }
+
+  const employee = isAdmin
+    ? await getEmployeByuserId(authUserId, userId)
+    : await getEmployeById(userId);
+
+  if (!employee) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Employee not found",
+    };
+  }
+
+  const { password: _password, ...userWithoutPassword } = employee;
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: { employee: userWithoutPassword },
   };
 }

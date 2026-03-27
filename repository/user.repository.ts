@@ -45,3 +45,32 @@ export async function getEmployeesByAdmin(
     .from(Users)
     .where(and(eq(Users.adminId, adminId), eq(Users.type, "employee")));
 }
+
+export async function getEmployeByuserId(
+  adminId: number,
+  userId: number,
+): Promise<UserModel | null> {
+  const rows = await db
+    .select()
+    .from(Users)
+    .where(
+      and(
+        eq(Users.id, userId),
+        eq(Users.adminId, adminId),
+        eq(Users.type, "employee"),
+      ),
+    );
+
+  return rows[0] ?? null;
+}
+
+export async function getEmployeById(
+  userId: number,
+): Promise<UserModel | null> {
+  const rows = await db
+    .select()
+    .from(Users)
+    .where(and(eq(Users.id, userId), eq(Users.type, "employee")));
+
+  return rows[0] ?? null;
+}
