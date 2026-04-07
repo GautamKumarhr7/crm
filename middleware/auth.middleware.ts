@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { HTTP_STATUS } from "../constant/http.constant";
+import { ADMIN_ROLE_ID } from "../constant/role.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
 import { verifyAccessToken } from "../utils/jwt";
 
@@ -37,7 +38,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
     });
   }
 
-  if (!authUser.isAdmin) {
+  if (authUser.roleId !== ADMIN_ROLE_ID) {
     return res.status(HTTP_STATUS.FORBIDDEN).json({
       message: USER_MESSAGES.ADMIN_ONLY_ACCESS,
     });

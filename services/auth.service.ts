@@ -56,8 +56,7 @@ export async function loginUser(
   const payload: AuthPayload = {
     userId: user.id,
     email: user.email ?? "",
-    isAdmin: Boolean(user.isAdmin),
-    type: (user.type ?? "employee") as "admin" | "employee",
+    roleId: Number(user.roleId ?? 0),
   };
 
   const { password: _password, ...userWithoutPassword } = user;

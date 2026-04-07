@@ -96,7 +96,7 @@ export async function getEmployeByuserIdController(
     const result = await getEmployeByuserIdForAdmin(
       req.authUser.userId,
       userId,
-      req.authUser.isAdmin,
+      req.authUser.roleId,
     );
 
     if (!result.ok) {

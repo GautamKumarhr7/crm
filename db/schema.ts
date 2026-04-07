@@ -18,10 +18,11 @@ export const Users = pgTable("users", {
   name: varchar("name"),
   email: varchar("email").unique(),
   password: varchar("password"),
-  department: varchar("department"),
+  department: varchar("department").notNull(),
   designation: varchar("designation"),
   dateOfJoining: date("date_of_joining"),
   sallery: doublePrecision("sallery"),
+  roleId: integer("role_id").notNull(),
   type: userTypeEnum("type"),
   pancardNo: varchar("pancard_no").unique(),
   aadharNo: varchar("aadhar_no").unique(),
@@ -29,7 +30,6 @@ export const Users = pgTable("users", {
   aadharUrl: varchar("aadhar_url"),
   pfDeduction: boolean("pf_deduction"),
   esiDeduction: boolean("esi_deduction"),
-  isAdmin: boolean("is_admin").default(false),
   adminId: integer("admin_id").notNull().default(0),
   createdBy: integer("created_by").references((): AnyPgColumn => Users.id),
   updatedAt: timestamp("updated_at")
@@ -167,6 +167,41 @@ export const Tenders = pgTable("tenders", {
   contractNo: varchar("contract_no").notNull().unique(),
   value: doublePrecision("value").notNull(),
   date: date("date").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Vendors = pgTable("vendors", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  category: varchar("category").notNull(),
+  city: varchar("city").notNull(),
+  complianceTax: varchar("compliance_tax").notNull(),
+  gstinOrPan: varchar("gstin_or_pan").notNull().unique(),
+  status: varchar("status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Contracts = pgTable("contracts", {
+  id: serial("id").primaryKey(),
+  contractId: varchar("contract_id").notNull().unique(),
+  projectId: integer("project_id")
+    .references((): AnyPgColumn => Projects.id)
+    .notNull(),
+  value: doublePrecision("value").notNull(),
+  period: varchar("period").notNull(),
+  status: varchar("status").notNull(),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)
     .notNull(),

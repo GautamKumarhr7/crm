@@ -3,6 +3,7 @@ import { InferSelectModel } from "drizzle-orm";
 import {
   Accounts,
   Bills,
+  Contracts,
   Invoices,
   LeaveAllocations,
   Leaves,
@@ -13,6 +14,7 @@ import {
   Sites,
   Tenders,
   Users,
+  Vendors,
   Works,
 } from "./db/schema";
 import type { AuthPayload } from "./utils/jwt";
@@ -53,6 +55,7 @@ export type CreateEmployeeInput = {
   email?: string;
   password?: string;
   department?: string;
+  roleId?: number;
   designation?: string;
   dateOfJoining?: string;
   sallery?: number;
@@ -72,6 +75,8 @@ export type BillModel = InferSelectModel<typeof Bills>;
 export type InvoiceModel = InferSelectModel<typeof Invoices>;
 export type ProcurementModel = InferSelectModel<typeof Procurements>;
 export type TenderModel = InferSelectModel<typeof Tenders>;
+export type VendorModel = InferSelectModel<typeof Vendors>;
+export type ContractModel = InferSelectModel<typeof Contracts>;
 export type MaterialReconciliationModel = InferSelectModel<
   typeof MaterialReconciliations
 >;
@@ -161,6 +166,23 @@ export type CreateMaterialReconciliationInput = {
   contTotal?: number;
   diffQty?: number;
   diffValue?: number;
+  status?: string;
+};
+
+export type CreateVendorInput = {
+  name?: string;
+  category?: string;
+  city?: string;
+  complianceTax?: string;
+  gstinOrPan?: string;
+  status?: string;
+};
+
+export type CreateContractInput = {
+  contractId?: string;
+  projectId?: number;
+  value?: number;
+  period?: string;
   status?: string;
 };
 

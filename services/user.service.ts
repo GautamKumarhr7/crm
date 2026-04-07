@@ -1,4 +1,9 @@
 import { HTTP_STATUS } from "../constant/http.constant";
+import { isMainDepartment } from "../constant/department.constant";
+import {
+  ADMIN_ROLE_ID,
+  getRoleIdForDepartment,
+} from "../constant/role.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
 import { findUserByEmail } from "../repository/auth.repository";
 import {
@@ -20,6 +25,7 @@ export async function createEmployeeForAdmin(
 ): Promise<ServiceResult<{ message: string; user: UserWithoutPassword }>> {
   const name = input.name?.trim();
   const email = input.email?.trim();
+  const department = input.department?.trim();
 
   if (!name || !email) {
     return {
@@ -28,6 +34,16 @@ export async function createEmployeeForAdmin(
       message: USER_MESSAGES.EMPLOYEE_NAME_EMAIL_REQUIRED,
     };
   }
+
+  if (!isMainDepartment(department)) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: USER_MESSAGES.EMPLOYEE_DEPARTMENT_REQUIRED,
+    };
+  }
+
+  const roleId = getRoleIdForDepartment(department);
 
   const existingUser = await findUserByEmail(email);
   if (existingUser) {
@@ -45,6 +61,8 @@ export async function createEmployeeForAdmin(
       ...input,
       name,
       email,
+      department,
+      roleId,
     },
     adminId,
     hashedPassword,
@@ -79,7 +97,7 @@ export async function getEmployeesForAdmin(
 export async function getEmployeByuserIdForAdmin(
   authUserId: number,
   userId: number,
-  isAdmin: boolean,
+  roleId: number,
 ): Promise<ServiceResult<{ employee: UserWithoutPassword }>> {
   if (!userId) {
     return {
@@ -88,6 +106,8 @@ export async function getEmployeByuserIdForAdmin(
       message: "userId is required",
     };
   }
+
+  const isAdmin = roleId === ADMIN_ROLE_ID;
 
   if (!isAdmin && authUserId !== userId) {
     return {

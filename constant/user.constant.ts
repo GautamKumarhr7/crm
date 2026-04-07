@@ -3,6 +3,9 @@ export const USER_MESSAGES = {
   INVALID_ACCESS_TOKEN: "Invalid or expired access token",
   ADMIN_ONLY_ACCESS: "Only admin can create employee",
   EMPLOYEE_NAME_EMAIL_REQUIRED: "Name and email are required",
+  EMPLOYEE_DEPARTMENT_REQUIRED:
+    "Department is required and must be one of: Admin, General & Administration, HR, Accounts, Marketing",
+  EMPLOYEE_ROLE_ID_REQUIRED: "Valid roleId is required for employee",
   EMPLOYEE_EMAIL_ALREADY_EXISTS: "Employee email already exists",
   EMPLOYEE_UNIQUE_FIELD_ALREADY_EXISTS:
     "Employee data already exists (unique field conflict)",

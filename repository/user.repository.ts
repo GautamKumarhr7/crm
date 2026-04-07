@@ -5,7 +5,12 @@ import { Users } from "../db/schema";
 import { CreateEmployeeInput, UserModel } from "../type";
 
 export async function createEmployeeByAdmin(
-  input: CreateEmployeeInput,
+  input: CreateEmployeeInput & {
+    name: string;
+    email: string;
+    department: string;
+    roleId: number;
+  },
   adminId: number,
   hashedPassword: string,
 ): Promise<UserModel> {
@@ -16,6 +21,7 @@ export async function createEmployeeByAdmin(
       email: input.email,
       password: hashedPassword,
       department: input.department,
+      roleId: input.roleId,
       designation: input.designation,
       dateOfJoining: input.dateOfJoining,
       sallery: input.sallery,
@@ -26,7 +32,6 @@ export async function createEmployeeByAdmin(
       aadharUrl: input.aadharUrl,
       pfDeduction: input.pfDeduction,
       esiDeduction: input.esiDeduction,
-      isAdmin: false,
       adminId,
       createdBy: adminId,
       uanNumber: input.uanNumber,
@@ -40,10 +45,7 @@ export async function createEmployeeByAdmin(
 export async function getEmployeesByAdmin(
   adminId: number,
 ): Promise<UserModel[]> {
-  return db
-    .select()
-    .from(Users)
-    .where(and(eq(Users.adminId, adminId), eq(Users.type, "employee")));
+  return db.select().from(Users).where(eq(Users.adminId, adminId));
 }
 
 export async function getEmployeByuserId(
@@ -53,13 +55,7 @@ export async function getEmployeByuserId(
   const rows = await db
     .select()
     .from(Users)
-    .where(
-      and(
-        eq(Users.id, userId),
-        eq(Users.adminId, adminId),
-        eq(Users.type, "employee"),
-      ),
-    );
+    .where(and(eq(Users.id, userId), eq(Users.adminId, adminId)));
 
   return rows[0] ?? null;
 }
@@ -67,10 +63,7 @@ export async function getEmployeByuserId(
 export async function getEmployeById(
   userId: number,
 ): Promise<UserModel | null> {
-  const rows = await db
-    .select()
-    .from(Users)
-    .where(and(eq(Users.id, userId), eq(Users.type, "employee")));
+  const rows = await db.select().from(Users).where(eq(Users.id, userId));
 
   return rows[0] ?? null;
 }

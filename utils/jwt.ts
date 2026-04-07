@@ -5,8 +5,7 @@ import { JWT_ENV_KEYS, JWT_EXPIRES_IN } from "../constant/jwt.constant";
 export type AuthPayload = {
   userId: number;
   email: string;
-  isAdmin: boolean;
-  type: "admin" | "employee";
+  roleId: number;
 };
 
 function getRequiredEnv(name: string): string {
@@ -42,15 +41,14 @@ export function verifyRefreshToken(token: string): AuthPayload | null {
 
     const payload = decoded as JwtPayload & Partial<AuthPayload>;
 
-    if (!payload.userId || !payload.email || !payload.type) {
+    if (!payload.userId || !payload.email) {
       return null;
     }
 
     return {
       userId: payload.userId,
       email: payload.email,
-      isAdmin: Boolean(payload.isAdmin),
-      type: payload.type,
+      roleId: Number(payload.roleId ?? 0),
     };
   } catch {
     return null;
@@ -67,15 +65,14 @@ export function verifyAccessToken(token: string): AuthPayload | null {
 
     const payload = decoded as JwtPayload & Partial<AuthPayload>;
 
-    if (!payload.userId || !payload.email || !payload.type) {
+    if (!payload.userId || !payload.email) {
       return null;
     }
 
     return {
       userId: payload.userId,
       email: payload.email,
-      isAdmin: Boolean(payload.isAdmin),
-      type: payload.type,
+      roleId: Number(payload.roleId ?? 0),
     };
   } catch {
     return null;
