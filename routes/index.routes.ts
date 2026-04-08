@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import accountRouter from "./accounts.routes";
+import attendanceRouter from "./attendance.routes";
 import authRouter from "./auth.routes";
 import billRouter from "./bill.routes";
 import contractRouter from "./contract.routes";
@@ -21,6 +22,7 @@ const indexRouter = Router();
 
 indexRouter.use("/auth", authRouter);
 indexRouter.use("/accounts", accountRouter);
+indexRouter.use("/attendance-logs", attendanceRouter);
 indexRouter.use("/users", userRouter);
 indexRouter.use("/projects", projectRouter);
 indexRouter.use("/bills", billRouter);

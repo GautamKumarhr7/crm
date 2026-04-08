@@ -3,6 +3,7 @@ import { InferSelectModel } from "drizzle-orm";
 import {
   Accounts,
   Bills,
+  AttendanceLogs,
   Contracts,
   Invoices,
   LeaveAllocations,
@@ -34,6 +35,7 @@ export type ServiceResult<T> =
 
 export type UserModel = InferSelectModel<typeof Users>;
 export type UserWithoutPassword = Omit<UserModel, "password">;
+export type AttendanceLogModel = InferSelectModel<typeof AttendanceLogs>;
 
 export type LoginSuccessData = {
   message: string;
@@ -85,6 +87,18 @@ export type LeaveAllocationModel = InferSelectModel<typeof LeaveAllocations>;
 export type SiteModel = InferSelectModel<typeof Sites>;
 export type WorkModel = InferSelectModel<typeof Works>;
 export type MilestoneModel = InferSelectModel<typeof Milestones>;
+
+export type AttendanceLogWithUser = AttendanceLogModel & {
+  user: Pick<
+    UserModel,
+    "id" | "name" | "email" | "department" | "designation" | "roleId" | "type"
+  > | null;
+};
+
+export type CreateAttendanceLogInput = {
+  userId?: number;
+  attendanceDate?: string;
+};
 
 export type CreateProjectInput = {
   code?: string;

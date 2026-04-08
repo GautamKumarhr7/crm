@@ -4,6 +4,7 @@ import {
   doublePrecision,
   pgEnum,
   pgTable,
+  uniqueIndex,
   serial,
   varchar,
   integer,
@@ -296,3 +297,27 @@ export const Milestones = pgTable("milestones", {
   status: varchar("status"),
   completion: integer("completion"),
 });
+
+export const AttendanceLogs = pgTable(
+  "attendance_logs",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .references((): AnyPgColumn => Users.id)
+      .notNull(),
+    attendanceDate: date("attendance_date").notNull(),
+    clockIn: timestamp("clock_in"),
+    clockOut: timestamp("clock_out"),
+    workingHours: doublePrecision("working_hours"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdateFn(() => new Date()),
+  },
+  (table) => ({
+    userDateUnique: uniqueIndex("attendance_logs_user_date_unique").on(
+      table.userId,
+      table.attendanceDate,
+    ),
+  }),
+);
