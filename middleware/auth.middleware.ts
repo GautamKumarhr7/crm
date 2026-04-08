@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { HTTP_STATUS } from "../constant/http.constant";
-import { ADMIN_ROLE_ID } from "../constant/role.constant";
+import { ADMIN_ROLE_ID, canCreateEmployee } from "../constant/role.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
 import { verifyAccessToken } from "../utils/jwt";
 
@@ -41,6 +41,29 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   if (authUser.roleId !== ADMIN_ROLE_ID) {
     return res.status(HTTP_STATUS.FORBIDDEN).json({
       message: USER_MESSAGES.ADMIN_ONLY_ACCESS,
+    });
+  }
+
+  req.authUser = authUser;
+  return next();
+}
+
+export function requireEmployeeCreator(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const authUser = getAuthPayload(req);
+
+  if (!authUser) {
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+      message: USER_MESSAGES.INVALID_ACCESS_TOKEN,
+    });
+  }
+
+  if (!canCreateEmployee(authUser.roleId)) {
+    return res.status(HTTP_STATUS.FORBIDDEN).json({
+      message: USER_MESSAGES.EMPLOYEE_CREATION_FORBIDDEN,
     });
   }
 

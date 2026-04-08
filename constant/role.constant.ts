@@ -18,6 +18,12 @@ export const DEPARTMENT_ROLE_ID_MAP: Record<MainDepartment, number> = {
 
 export const ADMIN_ROLE_ID = ROLE_IDS.ADMIN;
 
+export const EMPLOYEE_CREATOR_ROLE_IDS = [
+  ROLE_IDS.ADMIN,
+  ROLE_IDS.GENERAL_AND_ADMINISTRATION,
+  ROLE_IDS.HR,
+] as const;
+
 export const VALID_ROLE_IDS = Object.values(ROLE_IDS);
 
 export function isValidRoleId(roleId?: number): roleId is number {
@@ -27,4 +33,9 @@ export function isValidRoleId(roleId?: number): roleId is number {
 
 export function getRoleIdForDepartment(department: MainDepartment): number {
   return DEPARTMENT_ROLE_ID_MAP[department];
+}
+
+export function canCreateEmployee(roleId?: number): boolean {
+  if (typeof roleId !== "number") return false;
+  return (EMPLOYEE_CREATOR_ROLE_IDS as readonly number[]).includes(roleId);
 }

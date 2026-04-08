@@ -2,6 +2,8 @@ export const USER_MESSAGES = {
   ADMIN_TOKEN_REQUIRED: "Authorization token is required",
   INVALID_ACCESS_TOKEN: "Invalid or expired access token",
   ADMIN_ONLY_ACCESS: "Only admin can create employee",
+  EMPLOYEE_CREATION_FORBIDDEN:
+    "Only Admin, General & Administration, and HR can create employee",
   EMPLOYEE_NAME_EMAIL_REQUIRED: "Name and email are required",
   EMPLOYEE_DEPARTMENT_REQUIRED:
     "Department is required and must be one of: Admin, General & Administration, HR, Accounts, Marketing",
