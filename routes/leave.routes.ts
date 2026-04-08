@@ -8,7 +8,10 @@ import {
   approveLeaveController,
   rejectLeaveController,
 } from "../controllers/leave.controller";
-import { requireAuth, requireEmployeeCreator } from "../middleware/auth.middleware";
+import {
+  requireAuth,
+  requireEmployeeCreator,
+} from "../middleware/auth.middleware";
 
 const leaveRouter = Router();
 

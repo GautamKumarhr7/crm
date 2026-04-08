@@ -254,6 +254,27 @@ export const LeaveAllocations = pgTable("leave_allocations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const Payrolls = pgTable("payrolls", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  basicPay: doublePrecision("basic_pay").notNull(),
+  hra: doublePrecision("hra").notNull(),
+  conveyance: doublePrecision("conveyance").notNull(),
+  specialBonus: doublePrecision("special_bonus").notNull(),
+  pfContribution: doublePrecision("pf_contribution").default(0).notNull(),
+  esi: doublePrecision("esi").default(0).notNull(),
+  tdsTax: doublePrecision("tds_tax").default(0).notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const Sites = pgTable("sites", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").references((): AnyPgColumn => Projects.id),

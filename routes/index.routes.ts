@@ -10,6 +10,7 @@ import leaveAllocateRouter from "./leaveAllocate.routes";
 import leaveRouter from "./leave.routes";
 import materialReconciliationRouter from "./materialReconciliation.routes";
 import milestoneRouter from "./milestone.routes";
+import payrollRouter from "./payroll.routes";
 import procurementRouter from "./procurement.routes";
 import projectRouter from "./project.routes";
 import siteRouter from "./site.routes";
@@ -37,5 +38,6 @@ indexRouter.use("/vendors", vendorRouter);
 indexRouter.use("/sites", siteRouter);
 indexRouter.use("/works", workRouter);
 indexRouter.use("/milestones", milestoneRouter);
+indexRouter.use("/payrolls", payrollRouter);
 
 export default indexRouter;

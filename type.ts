@@ -8,6 +8,7 @@ import {
   Invoices,
   LeaveAllocations,
   Leaves,
+  Payrolls,
   MaterialReconciliations,
   Milestones,
   Procurements,
@@ -102,6 +103,7 @@ export type MaterialReconciliationModel = InferSelectModel<
 >;
 export type LeaveModel = InferSelectModel<typeof Leaves>;
 export type LeaveAllocationModel = InferSelectModel<typeof LeaveAllocations>;
+export type PayrollModel = InferSelectModel<typeof Payrolls>;
 export type SiteModel = InferSelectModel<typeof Sites>;
 export type WorkModel = InferSelectModel<typeof Works>;
 export type MilestoneModel = InferSelectModel<typeof Milestones>;
@@ -248,6 +250,25 @@ export type CreateLeaveAllocationInput = {
   company?: number;
   other?: number;
   createdBy?: number;
+};
+
+export type CreatePayrollInput = {
+  userId?: number;
+  basicPay?: number;
+  hra?: number;
+  conveyance?: number;
+  specialBonus?: number;
+  pfContribution?: number;
+  esi?: number;
+  tdsTax?: number;
+  createdBy?: number;
+};
+
+export type PayrollWithUser = PayrollModel & {
+  user: Pick<
+    UserModel,
+    "id" | "name" | "email" | "department" | "designation" | "sallery"
+  > | null;
 };
 
 export type CreateSiteInput = {
