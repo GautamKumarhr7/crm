@@ -5,16 +5,16 @@ import {
   getEmployeByuserIdController,
   getEmployeesController,
 } from "../controllers/user.controller";
-import {
-  requireAdmin,
-  requireAuth,
-  requireEmployeeCreator,
-} from "../middleware/auth.middleware";
+import { requireEmployeeCreator } from "../middleware/auth.middleware";
 
 const userRouter = Router();
 
 userRouter.post("/employee", requireEmployeeCreator, createEmployeeController);
-userRouter.get("/employee", requireAdmin, getEmployeesController);
-userRouter.get("/employee/:userId", requireAuth, getEmployeByuserIdController);
+userRouter.get("/employee", requireEmployeeCreator, getEmployeesController);
+userRouter.get(
+  "/employee/:userId",
+  requireEmployeeCreator,
+  getEmployeByuserIdController,
+);
 
 export default userRouter;

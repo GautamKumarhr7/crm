@@ -1,7 +1,7 @@
 import { HTTP_STATUS } from "../constant/http.constant";
 import { isMainDepartment } from "../constant/department.constant";
 import {
-  ADMIN_ROLE_ID,
+  canCreateEmployee,
   getRoleIdForDepartment,
 } from "../constant/role.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
@@ -107,9 +107,9 @@ export async function getEmployeByuserIdForAdmin(
     };
   }
 
-  const isAdmin = roleId === ADMIN_ROLE_ID;
+  const canManageEmployees = canCreateEmployee(roleId);
 
-  if (!isAdmin && authUserId !== userId) {
+  if (!canManageEmployees && authUserId !== userId) {
     return {
       ok: false,
       status: HTTP_STATUS.FORBIDDEN,
@@ -117,7 +117,7 @@ export async function getEmployeByuserIdForAdmin(
     };
   }
 
-  const employee = isAdmin
+  const employee = canManageEmployees
     ? await getEmployeByuserId(authUserId, userId)
     : await getEmployeById(userId);
 

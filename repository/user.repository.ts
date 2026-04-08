@@ -1,5 +1,6 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
+import { ADMIN_ROLE_ID } from "../constant/role.constant";
 import { db } from "../db/connection";
 import { Users } from "../db/schema";
 import { CreateEmployeeInput, UserModel } from "../type";
@@ -43,19 +44,19 @@ export async function createEmployeeByAdmin(
 }
 
 export async function getEmployeesByAdmin(
-  adminId: number,
+  _adminId: number,
 ): Promise<UserModel[]> {
-  return db.select().from(Users).where(eq(Users.adminId, adminId));
+  return db.select().from(Users).where(ne(Users.roleId, ADMIN_ROLE_ID));
 }
 
 export async function getEmployeByuserId(
-  adminId: number,
+  _adminId: number,
   userId: number,
 ): Promise<UserModel | null> {
   const rows = await db
     .select()
     .from(Users)
-    .where(and(eq(Users.id, userId), eq(Users.adminId, adminId)));
+    .where(and(eq(Users.id, userId), ne(Users.roleId, ADMIN_ROLE_ID)));
 
   return rows[0] ?? null;
 }
