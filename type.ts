@@ -71,6 +71,24 @@ export type CreateEmployeeInput = {
   age?: number;
 };
 
+export type UpdateEmployeeInput = {
+  name?: string;
+  email?: string;
+  password?: string;
+  department?: string;
+  designation?: string;
+  dateOfJoining?: string;
+  sallery?: number;
+  pancardNo?: string;
+  aadharNo?: string;
+  pancardUrl?: string;
+  aadharUrl?: string;
+  pfDeduction?: boolean;
+  esiDeduction?: boolean;
+  uanNumber?: string;
+  age?: number;
+};
+
 export type ProjectModel = InferSelectModel<typeof Projects>;
 export type AccountModel = InferSelectModel<typeof Accounts>;
 export type BillModel = InferSelectModel<typeof Bills>;
@@ -205,6 +223,9 @@ export type CreateLeaveInput = {
   type?: string;
   title?: string;
   reason?: string;
+  days?: number;
+  from?: string;
+  to?: string;
   createdBy?: number;
 };
 

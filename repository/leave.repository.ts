@@ -4,7 +4,7 @@ import type { CreateLeaveInput, LeaveModel } from "../type";
 import { eq } from "drizzle-orm";
 
 export async function createLeave(
-  input: CreateLeaveInput & {
+  input: Omit<CreateLeaveInput, "userId" | "type" | "title" | "reason"> & {
     userId: number;
     type: string;
     title: string;
@@ -17,6 +17,9 @@ export async function createLeave(
     type: input.type,
     title: input.title,
     reason: input.reason,
+    days: input.days || undefined,
+    from: input.from || undefined,
+    to: input.to || undefined,
     createdBy: input.createdBy,
   };
 

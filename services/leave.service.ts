@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from "../constant/http.constant";
+import { LEAVE_MESSAGES } from "../constant/leave.constant";
 import {
   createLeave,
   getLeaves,
@@ -7,6 +8,10 @@ import {
   approveLeave,
   rejectLeave,
 } from "../repository/leave.repository";
+import { 
+  getLeaveAllocationByUserId, 
+  getUsedLeaves 
+} from "../repository/leaveAllocate.repository";
 import type {
   CreateLeaveInput,
   LeaveModel,
@@ -51,19 +56,71 @@ export async function createLeaveService(
     };
   }
 
-  const leave = await createLeave({
+  // Check leave allocation
+  const leaveType = input.type?.trim() || "casual";
+  const leaveAllocation = await getLeaveAllocationByUserId(input.userId);
+
+  if (!leaveAllocation) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: LEAVE_MESSAGES.LEAVE_NOT_ALLOCATED,
+    };
+  }
+
+  // Get allocated days for the leave type
+  const allocatedKey = leaveType as keyof typeof leaveAllocation;
+  const allocatedDays = Number(leaveAllocation[allocatedKey] ?? 0);
+
+  if (allocatedDays === 0) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: `No ${leaveType} leaves allocated for this user`,
+    };
+  }
+
+  // If days provided, validate remaining balance
+  if (input.days && input.days > 0) {
+    const usedLeaves = await getUsedLeaves(input.userId, leaveType);
+    const remainingLeaves = allocatedDays - usedLeaves;
+
+    if (input.days > remainingLeaves) {
+      return {
+        ok: false,
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: `Insufficient ${leaveType} leave balance. Allocated: ${allocatedDays}, Used: ${usedLeaves}, Requested: ${input.days}, Remaining: ${remainingLeaves}`,
+      };
+    }
+  }
+
+  const payload: Parameters<typeof createLeave>[0] = {
     userId: input.userId,
-    type: input.type?.trim() || "casual",
+    type: leaveType,
     title: input.title.trim(),
     reason: input.reason.trim(),
     createdBy: input.createdBy,
-  });
+  };
+
+  if (input.days !== undefined) {
+    payload.days = input.days;
+  }
+
+  if (input.from !== undefined) {
+    payload.from = input.from;
+  }
+
+  if (input.to !== undefined) {
+    payload.to = input.to;
+  }
+
+  const leave = await createLeave(payload);
 
   return {
     ok: true,
     status: HTTP_STATUS.CREATED,
     data: {
-      message: "Leave applied successfully. Pending admin approval",
+      message: LEAVE_MESSAGES.LEAVE_APPLIED_SUCCESSFULLY,
       leave,
     },
   };
@@ -197,14 +254,6 @@ export async function rejectLeaveService(
     };
   }
 
-  if (!input.rejectionReason?.trim()) {
-    return {
-      ok: false,
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: "rejectionReason is required",
-    };
-  }
-
   const leave = await getLeaveById(input.leaveId);
 
   if (!leave) {
@@ -223,10 +272,12 @@ export async function rejectLeaveService(
     };
   }
 
+  const rejectionReason = input.rejectionReason?.trim() || "No reason provided";
+
   const rejectedLeave = await rejectLeave(
     input.leaveId,
     input.approvedBy,
-    input.rejectionReason.trim(),
+    rejectionReason,
   );
 
   return {

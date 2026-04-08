@@ -4,6 +4,8 @@ import {
   createEmployeeController,
   getEmployeByuserIdController,
   getEmployeesController,
+  updateEmployeeController,
+  deleteEmployeeController,
 } from "../controllers/user.controller";
 import { requireEmployeeCreator } from "../middleware/auth.middleware";
 
@@ -15,6 +17,16 @@ userRouter.get(
   "/employee/:userId",
   requireEmployeeCreator,
   getEmployeByuserIdController,
+);
+userRouter.put(
+  "/employee/:userId",
+  requireEmployeeCreator,
+  updateEmployeeController,
+);
+userRouter.delete(
+  "/employee/:userId",
+  requireEmployeeCreator,
+  deleteEmployeeController,
 );
 
 export default userRouter;

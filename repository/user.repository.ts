@@ -3,7 +3,7 @@ import { and, eq, ne } from "drizzle-orm";
 import { ADMIN_ROLE_ID } from "../constant/role.constant";
 import { db } from "../db/connection";
 import { Users } from "../db/schema";
-import { CreateEmployeeInput, UserModel } from "../type";
+import { CreateEmployeeInput, UpdateEmployeeInput, UserModel } from "../type";
 
 export async function createEmployeeByAdmin(
   input: CreateEmployeeInput & {
@@ -41,6 +41,34 @@ export async function createEmployeeByAdmin(
     .returning();
 
   return rows[0] as UserModel;
+}
+
+export async function updateEmployeeByAdmin(
+  userId: number,
+  input: UpdateEmployeeInput,
+  hashedPassword?: string,
+): Promise<UserModel | null> {
+  const updateData: any = { ...input };
+
+  if (hashedPassword) {
+    updateData.password = hashedPassword;
+  }
+
+  const rows = await db
+    .update(Users)
+    .set(updateData)
+    .where(eq(Users.id, userId))
+    .returning();
+
+  return rows[0] ?? null;
+}
+
+export async function deleteEmployeeByAdmin(userId: number): Promise<boolean> {
+  const result = await db
+    .delete(Users)
+    .where(and(eq(Users.id, userId), ne(Users.roleId, ADMIN_ROLE_ID)));
+
+  return (result.rowCount ?? 0) > 0;
 }
 
 export async function getEmployeesByAdmin(

@@ -18,7 +18,7 @@ import type {
 
 export async function createLeaveController(req: Request, res: Response) {
   try {
-    const userId = req.body.userId || req.authUser!.userId;
+    const userId = req.authUser!.userId;
     const result = await createLeaveService({
       ...(req.body as CreateLeaveInput),
       userId,

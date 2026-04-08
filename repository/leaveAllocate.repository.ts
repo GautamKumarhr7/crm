@@ -1,6 +1,6 @@
 import { db } from "../db/connection";
-import { LeaveAllocations } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { LeaveAllocations, Leaves } from "../db/schema";
+import { eq, and, sum } from "drizzle-orm";
 import type { CreateLeaveAllocationInput, LeaveAllocationModel } from "../type";
 
 export async function createLeaveAllocation(
@@ -53,4 +53,22 @@ export async function updateLeaveAllocation(
     .returning();
 
   return rows[0] as LeaveAllocationModel;
+}
+
+export async function getUsedLeaves(
+  userId: number,
+  leaveType: string,
+): Promise<number> {
+  const rows = await db
+    .select({ total: sum(Leaves.days).mapWith(Number) })
+    .from(Leaves)
+    .where(
+      and(
+        eq(Leaves.userId, userId),
+        eq(Leaves.type, leaveType),
+        eq(Leaves.status, "approved"),
+      ),
+    );
+
+  return rows[0]?.total ?? 0;
 }

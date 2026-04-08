@@ -8,7 +8,7 @@ import {
   approveLeaveController,
   rejectLeaveController,
 } from "../controllers/leave.controller";
-import { requireAuth, requireAdmin } from "../middleware/auth.middleware";
+import { requireAuth, requireEmployeeCreator } from "../middleware/auth.middleware";
 
 const leaveRouter = Router();
 
@@ -19,13 +19,13 @@ leaveRouter.get("/:id", requireAuth, getLeaveByIdController);
 leaveRouter.patch(
   "/:id/approve",
   requireAuth,
-  requireAdmin,
+  requireEmployeeCreator,
   approveLeaveController,
 );
 leaveRouter.patch(
   "/:id/reject",
   requireAuth,
-  requireAdmin,
+  requireEmployeeCreator,
   rejectLeaveController,
 );
 
