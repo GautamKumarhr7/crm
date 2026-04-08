@@ -345,3 +345,18 @@ export const AttendanceLogs = pgTable(
     ),
   }),
 );
+
+export const Reimbursements = pgTable("reimbursements", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references((): AnyPgColumn => Users.id).notNull(),
+  category: varchar("category").notNull(),
+  expenseDate: date("expense_date").notNull(),
+  amount: doublePrecision("amount").notNull(),
+  description: varchar("description").notNull(),
+  status: varchar("status").default("pending").notNull(),
+  approvedBy: integer("approved_by").references((): AnyPgColumn => Users.id),
+  rejectionReason: varchar("rejection_reason"),
+  createdBy: integer("created_by").references((): AnyPgColumn => Users.id).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});

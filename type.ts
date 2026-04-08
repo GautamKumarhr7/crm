@@ -8,6 +8,7 @@ import {
   Invoices,
   LeaveAllocations,
   Leaves,
+  Reimbursements,
   Payrolls,
   MaterialReconciliations,
   Milestones,
@@ -303,4 +304,34 @@ export type CreateMilestoneInput = {
   priority?: string;
   status?: string;
   completion?: number;
+};
+
+export type ReimbursementModel = InferSelectModel<typeof Reimbursements>;
+
+export type CreateReimbursementInput = {
+  userId?: number;
+  category?: string;
+  expenseDate?: string;
+  amount?: number;
+  description?: string;
+  status?: string;
+  createdBy?: number;
+};
+
+export type UpdateReimbursementInput = {
+  category?: string;
+  expenseDate?: string;
+  amount?: number;
+  description?: string;
+};
+
+export type ApproveReimbursementInput = {
+  reimbursementId?: number;
+  approvedBy?: number;
+};
+
+export type RejectReimbursementInput = {
+  reimbursementId?: number;
+  approvedBy?: number;
+  rejectionReason?: string;
 };
