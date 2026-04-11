@@ -182,10 +182,19 @@ export type CreateProcurementInput = {
 };
 
 export type CreateTenderInput = {
-  nameOfWork?: string;
-  natureOfWorkBriefDescription?: string;
-  clientNameAddress?: string;
-  contractNo?: string;
+  Name?: string;
+  Description?: string;
+  NameAddress?: Array<Record<string, unknown>>;
+  ContractId?: string;
+  Value?: number;
+  Date?: string;
+};
+
+export type UpdateTenderInput = {
+  name?: string;
+  description?: string;
+  nameAddress?: Array<Record<string, unknown>>;
+  contractId?: string;
   value?: number;
   date?: string;
 };
@@ -207,17 +216,31 @@ export type CreateMaterialReconciliationInput = {
 export type CreateVendorInput = {
   name?: string;
   category?: string;
-  city?: string;
-  complianceTax?: string;
-  gstinOrPan?: string;
+  headquater?: string;
+  panOrgstin?: string;
+  value?: string;
+  status?: string;
+};
+
+export type UpdateVendorInput = {
+  name?: string;
+  category?: string;
+  headquater?: string;
+  value?: string;
   status?: string;
 };
 
 export type CreateContractInput = {
-  contractId?: string;
+  referenceId?: string;
   projectId?: number;
-  value?: number;
-  period?: string;
+  contractValue?: number;
+  validity?: string;
+  status?: string;
+};
+
+export type UpdateContractInput = {
+  contractValue?: number;
+  validity?: string;
   status?: string;
 };
 

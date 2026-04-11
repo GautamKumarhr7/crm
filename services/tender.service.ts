@@ -1,48 +1,63 @@
 import { HTTP_STATUS } from "../constant/http.constant";
 import {
   createTender,
-  findTenderByContractNo,
+  deleteTender,
+  findTenderByContractId,
+  getTenderById,
   getTenders,
+  updateTender,
 } from "../repository/tender.repository";
-import type { CreateTenderInput, ServiceResult, TenderModel } from "../type";
+import type {
+  CreateTenderInput,
+  ServiceResult,
+  TenderModel,
+  UpdateTenderInput,
+} from "../type";
 
 export async function createTenderService(
   input: CreateTenderInput,
   createdBy: number,
 ): Promise<ServiceResult<{ message: string; tender: TenderModel }>> {
-  if (!input.nameOfWork?.trim()) {
+  const name = input.Name?.trim();
+  const description = input.Description?.trim();
+  const nameAddress = input.NameAddress;
+  const contractId = input.ContractId?.trim();
+  const value = input.Value;
+  const date = input.Date?.trim();
+
+  if (!name) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Name of work is required",
+      message: "Name is required",
     };
   }
 
-  if (!input.natureOfWorkBriefDescription?.trim()) {
+  if (!description) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Nature of work & brief description is required",
+      message: "Description is required",
     };
   }
 
-  if (!input.clientNameAddress?.trim()) {
+  if (!nameAddress || nameAddress.length === 0) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Client name & address is required",
+      message: "Name & Address is required",
     };
   }
 
-  if (!input.contractNo?.trim()) {
+  if (!contractId) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Contract number is required",
+      message: "ContractId is required",
     };
   }
 
-  if (input.value === undefined || input.value <= 0) {
+  if (value === undefined || value <= 0) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
@@ -50,7 +65,7 @@ export async function createTenderService(
     };
   }
 
-  if (!input.date?.trim()) {
+  if (!date) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
@@ -58,25 +73,24 @@ export async function createTenderService(
     };
   }
 
-  const contractNo = input.contractNo.trim();
-  const existing = await findTenderByContractNo(contractNo);
+  const existing = await findTenderByContractId(contractId);
 
   if (existing) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Contract number already exists",
+      message: "ContractId already exists",
     };
   }
 
   const tender = await createTender(
     {
-      nameOfWork: input.nameOfWork.trim(),
-      natureOfWorkBriefDescription: input.natureOfWorkBriefDescription.trim(),
-      clientNameAddress: input.clientNameAddress.trim(),
-      contractNo,
-      value: input.value,
-      date: input.date.trim(),
+      name,
+      description,
+      nameAddress,
+      contractId,
+      value,
+      date,
     },
     createdBy,
   );
@@ -100,5 +114,91 @@ export async function getTendersService(): Promise<
     ok: true,
     status: HTTP_STATUS.OK,
     data: { tenders },
+  };
+}
+
+export async function getTenderByIdService(
+  id: number,
+): Promise<ServiceResult<{ tender: TenderModel }>> {
+  const tender = await getTenderById(id);
+
+  if (!tender) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Tender not found",
+    };
+  }
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: { tender },
+  };
+}
+
+export async function updateTenderService(
+  id: number,
+  input: UpdateTenderInput,
+): Promise<ServiceResult<{ message: string; tender: TenderModel }>> {
+  const tender = await getTenderById(id);
+
+  if (!tender) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Tender not found",
+    };
+  }
+
+  const updated = await updateTender(id, input);
+
+  if (!updated) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: "Failed to update tender",
+    };
+  }
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: {
+      message: "Tender updated successfully",
+      tender: updated,
+    },
+  };
+}
+
+export async function deleteTenderService(
+  id: number,
+): Promise<ServiceResult<{ message: string }>> {
+  const tender = await getTenderById(id);
+
+  if (!tender) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Tender not found",
+    };
+  }
+
+  const deleted = await deleteTender(id);
+
+  if (!deleted) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: "Failed to delete tender",
+    };
+  }
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: {
+      message: "Tender deleted successfully",
+    },
   };
 }

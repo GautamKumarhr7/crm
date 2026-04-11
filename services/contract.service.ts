@@ -1,24 +1,28 @@
 import { HTTP_STATUS } from "../constant/http.constant";
 import {
   createContract,
-  findContractByContractId,
+  deleteContract,
+  findContractByReferenceId,
+  getContractById,
   getContracts,
+  updateContract,
 } from "../repository/contract.repository";
 import type {
   ContractModel,
   CreateContractInput,
   ServiceResult,
+  UpdateContractInput,
 } from "../type";
 
 export async function createContractService(
   input: CreateContractInput,
   createdBy: number,
 ): Promise<ServiceResult<{ message: string; contract: ContractModel }>> {
-  if (!input.contractId?.trim()) {
+  if (!input.referenceId?.trim()) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "contractId is required",
+      message: "referenceId is required",
     };
   }
 
@@ -30,19 +34,19 @@ export async function createContractService(
     };
   }
 
-  if (input.value === undefined || input.value <= 0) {
+  if (input.contractValue === undefined || input.contractValue <= 0) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Value must be greater than 0",
+      message: "contractValue must be greater than 0",
     };
   }
 
-  if (!input.period?.trim()) {
+  if (!input.validity?.trim()) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Period is required",
+      message: "validity is required",
     };
   }
 
@@ -50,27 +54,27 @@ export async function createContractService(
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Status is required",
+      message: "status is required",
     };
   }
 
-  const contractId = input.contractId.trim();
-  const existing = await findContractByContractId(contractId);
+  const referenceId = input.referenceId.trim();
+  const existing = await findContractByReferenceId(referenceId);
 
   if (existing) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "contractId already exists",
+      message: "referenceId already exists",
     };
   }
 
   const contract = await createContract(
     {
-      contractId,
+      referenceId,
       projectId: input.projectId,
-      value: input.value,
-      period: input.period.trim(),
+      contractValue: input.contractValue,
+      validity: input.validity.trim(),
       status: input.status.trim(),
     },
     createdBy,
@@ -95,5 +99,91 @@ export async function getContractsService(): Promise<
     ok: true,
     status: HTTP_STATUS.OK,
     data: { contracts },
+  };
+}
+
+export async function getContractByIdService(
+  id: number,
+): Promise<ServiceResult<{ contract: ContractModel }>> {
+  const contract = await getContractById(id);
+
+  if (!contract) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Contract not found",
+    };
+  }
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: { contract },
+  };
+}
+
+export async function updateContractService(
+  id: number,
+  input: UpdateContractInput,
+): Promise<ServiceResult<{ message: string; contract: ContractModel }>> {
+  const contract = await getContractById(id);
+
+  if (!contract) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Contract not found",
+    };
+  }
+
+  const updated = await updateContract(id, input);
+
+  if (!updated) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: "Failed to update contract",
+    };
+  }
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: {
+      message: "Contract updated successfully",
+      contract: updated,
+    },
+  };
+}
+
+export async function deleteContractService(
+  id: number,
+): Promise<ServiceResult<{ message: string }>> {
+  const contract = await getContractById(id);
+
+  if (!contract) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.NOT_FOUND,
+      message: "Contract not found",
+    };
+  }
+
+  const deleted = await deleteContract(id);
+
+  if (!deleted) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: "Failed to delete contract",
+    };
+  }
+
+  return {
+    ok: true,
+    status: HTTP_STATUS.OK,
+    data: {
+      message: "Contract deleted successfully",
+    },
   };
 }

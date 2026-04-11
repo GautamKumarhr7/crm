@@ -2,15 +2,29 @@ import { eq } from "drizzle-orm";
 
 import { db } from "../db/connection";
 import { Tenders } from "../db/schema";
-import type { CreateTenderInput, TenderModel } from "../type";
+import type {
+  CreateTenderInput,
+  TenderModel,
+  UpdateTenderInput,
+} from "../type";
 
-export async function findTenderByContractNo(
-  contractNo: string,
+export async function getTenderById(id: number): Promise<TenderModel | null> {
+  const rows = await db
+    .select()
+    .from(Tenders)
+    .where(eq(Tenders.id, id))
+    .limit(1);
+
+  return (rows[0] as TenderModel | undefined) ?? null;
+}
+
+export async function findTenderByContractId(
+  contractId: string,
 ): Promise<TenderModel | null> {
   const rows = await db
     .select()
     .from(Tenders)
-    .where(eq(Tenders.contractNo, contractNo))
+    .where(eq(Tenders.contractId, contractId))
     .limit(1);
 
   return (rows[0] as TenderModel | undefined) ?? null;
@@ -18,20 +32,20 @@ export async function findTenderByContractNo(
 
 export async function createTender(
   input: CreateTenderInput & {
-    nameOfWork: string;
-    natureOfWorkBriefDescription: string;
-    clientNameAddress: string;
-    contractNo: string;
+    name: string;
+    description: string;
+    nameAddress: Array<Record<string, unknown>>;
+    contractId: string;
     value: number;
     date: string;
   },
   createdBy: number,
 ): Promise<TenderModel> {
   const payload: typeof Tenders.$inferInsert = {
-    nameOfWork: input.nameOfWork,
-    natureOfWorkBriefDescription: input.natureOfWorkBriefDescription,
-    clientNameAddress: input.clientNameAddress,
-    contractNo: input.contractNo,
+    name: input.name,
+    description: input.description,
+    nameAddress: input.nameAddress,
+    contractId: input.contractId,
     value: input.value,
     date: input.date,
     createdBy,
@@ -43,4 +57,29 @@ export async function createTender(
 
 export async function getTenders(): Promise<TenderModel[]> {
   return db.select().from(Tenders);
+}
+
+export async function updateTender(
+  id: number,
+  input: UpdateTenderInput,
+): Promise<TenderModel | null> {
+  const rows = await db
+    .update(Tenders)
+    .set({
+      ...(input.name && { name: input.name }),
+      ...(input.description && { description: input.description }),
+      ...(input.nameAddress && { nameAddress: input.nameAddress }),
+      ...(input.contractId && { contractId: input.contractId }),
+      ...(input.value !== undefined && { value: input.value }),
+      ...(input.date && { date: input.date }),
+    })
+    .where(eq(Tenders.id, id))
+    .returning();
+
+  return (rows[0] as TenderModel | undefined) ?? null;
+}
+
+export async function deleteTender(id: number): Promise<boolean> {
+  const rows = await db.delete(Tenders).where(eq(Tenders.id, id)).returning();
+  return rows.length > 0;
 }
