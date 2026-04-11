@@ -21,6 +21,7 @@ import siteRouter from "./site.routes";
 import tenderRouter from "./tender.routes";
 import userRouter from "./user.routes";
 import vendorRouter from "./vendor.routes";
+import voucherRouter from "./voucher.routes";
 import workRouter from "./work.routes";
 
 const indexRouter = Router();
@@ -42,6 +43,7 @@ indexRouter.use("/material-reconciliations", materialReconciliationRouter);
 indexRouter.use("/materials", materialRouter);
 indexRouter.use("/tenders", tenderRouter);
 indexRouter.use("/vendors", vendorRouter);
+indexRouter.use("/vouchers", voucherRouter);
 indexRouter.use("/sites", siteRouter);
 indexRouter.use("/works", workRouter);
 indexRouter.use("/milestones", milestoneRouter);

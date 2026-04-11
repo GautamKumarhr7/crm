@@ -18,6 +18,7 @@ import {
   Projects,
   Quotations,
   Sites,
+  Vouchers,
   Tenders,
   Users,
   Vendors,
@@ -100,6 +101,7 @@ export type BillModel = InferSelectModel<typeof Bills>;
 export type InvoiceModel = InferSelectModel<typeof Invoices>;
 export type ProcurementModel = InferSelectModel<typeof Procurements>;
 export type QuotationModel = InferSelectModel<typeof Quotations>;
+export type VoucherModel = InferSelectModel<typeof Vouchers>;
 export type TenderModel = InferSelectModel<typeof Tenders>;
 export type VendorModel = InferSelectModel<typeof Vendors>;
 export type ContractModel = InferSelectModel<typeof Contracts>;
@@ -167,6 +169,20 @@ export type CreateAccountInput = {
 export type CreateInvoiceInput = {
   invoiceId?: string;
   projectId?: number;
+  billType?: string;
+  clientOrProject?: string;
+  type?: string;
+  date?: string;
+  gst?: number;
+  retention?: number;
+  amount?: number;
+  status?: string;
+};
+
+export type UpdateInvoiceInput = {
+  invoiceId?: string;
+  projectId?: number;
+  billType?: string;
   clientOrProject?: string;
   type?: string;
   date?: string;
@@ -193,6 +209,24 @@ export type CreateQuotationInput = {
   quoteValue?: number;
   version?: string;
   status?: string;
+};
+
+export type CreateVoucherInput = {
+  type?: string;
+  date?: string;
+  amount?: number;
+  tdsDeductions?: number;
+  secondaryPartyAccount?: string;
+  narrationRemarks?: string;
+};
+
+export type UpdateVoucherInput = {
+  type?: string;
+  date?: string;
+  amount?: number;
+  tdsDeductions?: number;
+  secondaryPartyAccount?: string;
+  narrationRemarks?: string;
 };
 
 export type UpdateQuotationInput = {

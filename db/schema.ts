@@ -267,6 +267,23 @@ export const Quotations = pgTable("quotations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const Vouchers = pgTable("vouchers", {
+  id: serial("id").primaryKey(),
+  type: varchar("type").notNull(),
+  date: date("date").notNull(),
+  amount: doublePrecision("amount").notNull(),
+  tdsDeductions: doublePrecision("tds_deductions").notNull(),
+  secondaryPartyAccount: varchar("secondary_party_account").notNull(),
+  narrationRemarks: varchar("narration_remarks").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const Leaves = pgTable("leaves", {
   id: serial("id").primaryKey(),
   userId: integer("user_id")

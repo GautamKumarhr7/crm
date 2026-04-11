@@ -2,7 +2,21 @@ import { eq } from "drizzle-orm";
 
 import { db } from "../db/connection";
 import { Invoices } from "../db/schema";
-import type { CreateInvoiceInput, InvoiceModel } from "../type";
+import type {
+  CreateInvoiceInput,
+  InvoiceModel,
+  UpdateInvoiceInput,
+} from "../type";
+
+export async function getInvoiceById(id: number): Promise<InvoiceModel | null> {
+  const rows = await db
+    .select()
+    .from(Invoices)
+    .where(eq(Invoices.id, id))
+    .limit(1);
+
+  return (rows[0] as InvoiceModel | undefined) ?? null;
+}
 
 export async function findInvoiceByInvoiceId(
   invoiceId: string,
@@ -55,4 +69,32 @@ export async function getInvoicesByProjectId(
   projectId: number,
 ): Promise<InvoiceModel[]> {
   return db.select().from(Invoices).where(eq(Invoices.projectId, projectId));
+}
+
+export async function updateInvoice(
+  id: number,
+  input: UpdateInvoiceInput,
+): Promise<InvoiceModel | null> {
+  const rows = await db
+    .update(Invoices)
+    .set({
+      ...(input.invoiceId && { invoiceId: input.invoiceId }),
+      ...(input.projectId !== undefined && { projectId: input.projectId }),
+      ...(input.clientOrProject && { clientOrProject: input.clientOrProject }),
+      ...(input.type && { type: input.type }),
+      ...(input.date && { date: input.date }),
+      ...(input.gst !== undefined && { gst: input.gst }),
+      ...(input.retention !== undefined && { retention: input.retention }),
+      ...(input.amount !== undefined && { amount: input.amount }),
+      ...(input.status && { status: input.status }),
+    })
+    .where(eq(Invoices.id, id))
+    .returning();
+
+  return (rows[0] as InvoiceModel | undefined) ?? null;
+}
+
+export async function deleteInvoice(id: number): Promise<boolean> {
+  const rows = await db.delete(Invoices).where(eq(Invoices.id, id)).returning();
+  return rows.length > 0;
 }

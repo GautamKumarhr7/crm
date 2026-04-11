@@ -4,16 +4,15 @@ import { HTTP_STATUS } from "../constant/http.constant";
 import { SERVER_MESSAGES } from "../constant/server.constant";
 import { USER_MESSAGES } from "../constant/user.constant";
 import {
-  createInvoiceService,
-  deleteInvoiceService,
-  getInvoiceByIdService,
-  getInvoicesByProjectIdService,
-  getInvoicesService,
-  updateInvoiceService,
-} from "../services/invoice.service";
-import type { CreateInvoiceInput, UpdateInvoiceInput } from "../type";
+  createVoucherService,
+  deleteVoucherService,
+  getVoucherByIdService,
+  getVouchersService,
+  updateVoucherService,
+} from "../services/voucher.service";
+import type { CreateVoucherInput, UpdateVoucherInput } from "../type";
 
-export async function createInvoiceController(req: Request, res: Response) {
+export async function createVoucherController(req: Request, res: Response) {
   try {
     if (!req.authUser) {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -21,8 +20,8 @@ export async function createInvoiceController(req: Request, res: Response) {
       });
     }
 
-    const result = await createInvoiceService(
-      req.body as CreateInvoiceInput,
+    const result = await createVoucherService(
+      req.body as CreateVoucherInput,
       req.authUser.userId,
     );
 
@@ -39,9 +38,9 @@ export async function createInvoiceController(req: Request, res: Response) {
   }
 }
 
-export async function getInvoicesController(req: Request, res: Response) {
+export async function getVouchersController(req: Request, res: Response) {
   try {
-    const result = await getInvoicesService();
+    const result = await getVouchersService();
 
     if (!result.ok) {
       return res.status(result.status).json({ message: result.message });
@@ -56,46 +55,18 @@ export async function getInvoicesController(req: Request, res: Response) {
   }
 }
 
-export async function getInvoicesByProjectIdController(
-  req: Request,
-  res: Response,
-) {
-  try {
-    const projectIdParam = req.params.projectId;
-    if (!projectIdParam || typeof projectIdParam !== "string") {
-      return res
-        .status(HTTP_STATUS.BAD_REQUEST)
-        .json({ message: "Invalid projectId parameter" });
-    }
-
-    const projectId = parseInt(projectIdParam, 10);
-    const result = await getInvoicesByProjectIdService(projectId);
-
-    if (!result.ok) {
-      return res.status(result.status).json({ message: result.message });
-    }
-
-    return res.status(result.status).json(result.data);
-  } catch (error) {
-    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message: SERVER_MESSAGES.INTERNAL_SERVER_ERROR,
-      error,
-    });
-  }
-}
-
-export async function getInvoiceByIdController(req: Request, res: Response) {
+export async function getVoucherByIdController(req: Request, res: Response) {
   try {
     const idParam = req.params.id as string | undefined;
     const id = parseInt(idParam || "", 10);
 
     if (!idParam || isNaN(id)) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid invoice ID",
+        message: "Invalid voucher ID",
       });
     }
 
-    const result = await getInvoiceByIdService(id);
+    const result = await getVoucherByIdService(id);
 
     if (!result.ok) {
       return res.status(result.status).json({ message: result.message });
@@ -110,7 +81,7 @@ export async function getInvoiceByIdController(req: Request, res: Response) {
   }
 }
 
-export async function updateInvoiceController(req: Request, res: Response) {
+export async function updateVoucherController(req: Request, res: Response) {
   try {
     if (!req.authUser) {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -123,13 +94,13 @@ export async function updateInvoiceController(req: Request, res: Response) {
 
     if (!idParam || isNaN(id)) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid invoice ID",
+        message: "Invalid voucher ID",
       });
     }
 
-    const result = await updateInvoiceService(
+    const result = await updateVoucherService(
       id,
-      req.body as UpdateInvoiceInput,
+      req.body as UpdateVoucherInput,
     );
 
     if (!result.ok) {
@@ -138,20 +109,6 @@ export async function updateInvoiceController(req: Request, res: Response) {
 
     return res.status(result.status).json(result.data);
   } catch (error) {
-    const dbError = error as { code?: string; detail?: string };
-
-    if (dbError?.code === "23505") {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: dbError.detail ?? "Invoice ID already exists",
-      });
-    }
-
-    if (dbError?.code === "23503") {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid projectId",
-      });
-    }
-
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       message: SERVER_MESSAGES.INTERNAL_SERVER_ERROR,
       error,
@@ -159,7 +116,7 @@ export async function updateInvoiceController(req: Request, res: Response) {
   }
 }
 
-export async function deleteInvoiceController(req: Request, res: Response) {
+export async function deleteVoucherController(req: Request, res: Response) {
   try {
     if (!req.authUser) {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -172,11 +129,11 @@ export async function deleteInvoiceController(req: Request, res: Response) {
 
     if (!idParam || isNaN(id)) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message: "Invalid invoice ID",
+        message: "Invalid voucher ID",
       });
     }
 
-    const result = await deleteInvoiceService(id);
+    const result = await deleteVoucherService(id);
 
     if (!result.ok) {
       return res.status(result.status).json({ message: result.message });
