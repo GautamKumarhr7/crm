@@ -195,6 +195,14 @@ export type CreateQuotationInput = {
   status?: string;
 };
 
+export type UpdateQuotationInput = {
+  quotationDetails?: string;
+  projectId?: number;
+  quoteValue?: number;
+  version?: string;
+  status?: string;
+};
+
 export type CreateTenderInput = {
   Name?: string;
   Description?: string;
@@ -236,7 +244,25 @@ export type CreateMaterialInput = {
   avgPurchaseRate?: number;
 };
 
+export type UpdateMaterialInput = {
+  materialName?: string;
+  category?: string;
+  warehouseLocation?: string;
+  quantity?: number;
+  quantityType?: string;
+  avgPurchaseRate?: number;
+};
+
 export type CreateEquipmentInput = {
+  equipmentName?: string;
+  category?: string;
+  registrationOrChassisNo?: string;
+  operationalAssignment?: string;
+  primaryOperator?: string;
+  initialStatus?: string;
+};
+
+export type UpdateEquipmentInput = {
   equipmentName?: string;
   category?: string;
   registrationOrChassisNo?: string;
