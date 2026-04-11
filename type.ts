@@ -5,15 +5,18 @@ import {
   Bills,
   AttendanceLogs,
   Contracts,
+  Equipments,
   Invoices,
   LeaveAllocations,
   Leaves,
   Reimbursements,
   Payrolls,
   MaterialReconciliations,
+  Materials,
   Milestones,
   Procurements,
   Projects,
+  Quotations,
   Sites,
   Tenders,
   Users,
@@ -96,12 +99,15 @@ export type AccountModel = InferSelectModel<typeof Accounts>;
 export type BillModel = InferSelectModel<typeof Bills>;
 export type InvoiceModel = InferSelectModel<typeof Invoices>;
 export type ProcurementModel = InferSelectModel<typeof Procurements>;
+export type QuotationModel = InferSelectModel<typeof Quotations>;
 export type TenderModel = InferSelectModel<typeof Tenders>;
 export type VendorModel = InferSelectModel<typeof Vendors>;
 export type ContractModel = InferSelectModel<typeof Contracts>;
+export type EquipmentModel = InferSelectModel<typeof Equipments>;
 export type MaterialReconciliationModel = InferSelectModel<
   typeof MaterialReconciliations
 >;
+export type MaterialModel = InferSelectModel<typeof Materials>;
 export type LeaveModel = InferSelectModel<typeof Leaves>;
 export type LeaveAllocationModel = InferSelectModel<typeof LeaveAllocations>;
 export type PayrollModel = InferSelectModel<typeof Payrolls>;
@@ -181,6 +187,14 @@ export type CreateProcurementInput = {
   status?: string;
 };
 
+export type CreateQuotationInput = {
+  quotationDetails?: string;
+  projectId?: number;
+  quoteValue?: number;
+  version?: string;
+  status?: string;
+};
+
 export type CreateTenderInput = {
   Name?: string;
   Description?: string;
@@ -213,12 +227,30 @@ export type CreateMaterialReconciliationInput = {
   status?: string;
 };
 
+export type CreateMaterialInput = {
+  materialName?: string;
+  category?: string;
+  warehouseLocation?: string;
+  quantity?: number;
+  quantityType?: string;
+  avgPurchaseRate?: number;
+};
+
+export type CreateEquipmentInput = {
+  equipmentName?: string;
+  category?: string;
+  registrationOrChassisNo?: string;
+  operationalAssignment?: string;
+  primaryOperator?: string;
+  initialStatus?: string;
+};
+
 export type CreateVendorInput = {
   name?: string;
   category?: string;
   headquater?: string;
   panOrgstin?: string;
-  value?: string;
+  value?: number;
   status?: string;
 };
 
@@ -226,7 +258,7 @@ export type UpdateVendorInput = {
   name?: string;
   category?: string;
   headquater?: string;
-  value?: string;
+  value?: number;
   status?: string;
 };
 

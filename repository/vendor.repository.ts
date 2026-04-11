@@ -36,7 +36,7 @@ export async function createVendor(
     category: string;
     headquater: string;
     panOrgstin: string;
-    value: string;
+    value: number;
     status: string;
   },
   createdBy: number,
@@ -69,7 +69,7 @@ export async function updateVendor(
       ...(input.name && { name: input.name }),
       ...(input.category && { category: input.category }),
       ...(input.headquater && { headquater: input.headquater }),
-      ...(input.value && { value: input.value }),
+      ...(input.value !== undefined && { value: input.value }),
       ...(input.status && { status: input.status }),
     })
     .where(eq(Vendors.id, id))

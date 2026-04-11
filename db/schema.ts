@@ -124,6 +124,42 @@ export const MaterialReconciliations = pgTable("material_reconciliations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const Materials = pgTable("materials", {
+  id: serial("id").primaryKey(),
+  materialName: varchar("material_name").notNull(),
+  category: varchar("category").notNull(),
+  warehouseLocation: varchar("warehouse_location").notNull(),
+  quantity: doublePrecision("quantity").notNull(),
+  quantityType: varchar("quantity_type").notNull(),
+  avgPurchaseRate: doublePrecision("avg_purchase_rate").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Equipments = pgTable("equipments", {
+  id: serial("id").primaryKey(),
+  equipmentName: varchar("equipment_name").notNull(),
+  category: varchar("category").notNull(),
+  registrationOrChassisNo: varchar("registration_or_chassis_no")
+    .notNull()
+    .unique(),
+  operationalAssignment: varchar("operational_assignment"),
+  primaryOperator: varchar("primary_operator").notNull(),
+  initialStatus: varchar("initial_status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const Invoices = pgTable("invoices", {
   id: serial("id").primaryKey(),
   invoiceId: varchar("invoice_id").notNull().unique(),
@@ -184,7 +220,7 @@ export const Vendors = pgTable("vendors", {
   category: varchar("category").notNull(),
   headquater: varchar("headquater").notNull(),
   panOrgstin: varchar("pan_orgstin").notNull().unique(),
-  value: varchar("value").notNull(),
+  value: doublePrecision("value").notNull(),
   status: varchar("status").notNull(),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)
@@ -203,6 +239,24 @@ export const Contracts = pgTable("contracts", {
     .notNull(),
   contractValue: doublePrecision("contract_value").notNull(),
   validity: date("validity").notNull(),
+  status: varchar("status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Quotations = pgTable("quotations", {
+  id: serial("id").primaryKey(),
+  quotationDetails: varchar("quotation_details").notNull().unique(),
+  projectId: integer("project_id")
+    .references((): AnyPgColumn => Projects.id)
+    .notNull(),
+  quoteValue: doublePrecision("quote_value").notNull(),
+  version: varchar("version").notNull(),
   status: varchar("status").notNull(),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)

@@ -42,11 +42,16 @@ export async function createVendorService(
     };
   }
 
-  if (!input.value?.trim()) {
+  if (
+    input.value === undefined ||
+    typeof input.value !== "number" ||
+    Number.isNaN(input.value) ||
+    input.value <= 0
+  ) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Value is required",
+      message: "Value must be greater than 0",
     };
   }
 
@@ -83,7 +88,7 @@ export async function createVendorService(
       category: input.category.trim(),
       headquater: input.headquater.trim(),
       panOrgstin,
-      value: input.value.trim(),
+      value: input.value,
       status: input.status.trim(),
     },
     createdBy,
@@ -135,6 +140,19 @@ export async function updateVendorService(
   id: number,
   input: UpdateVendorInput,
 ): Promise<ServiceResult<{ message: string; vendor: VendorModel }>> {
+  if (
+    input.value !== undefined &&
+    (typeof input.value !== "number" ||
+      Number.isNaN(input.value) ||
+      input.value <= 0)
+  ) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Value must be greater than 0",
+    };
+  }
+
   const vendor = await getVendorById(id);
 
   if (!vendor) {
