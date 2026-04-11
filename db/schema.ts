@@ -284,6 +284,27 @@ export const Vouchers = pgTable("vouchers", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const Tds = pgTable("tds", {
+  id: serial("id").primaryKey(),
+  tdsId: varchar("tds_id").notNull().unique(),
+  vendorId: integer("vendor_id")
+    .references((): AnyPgColumn => Vendors.id)
+    .notNull(),
+  section: varchar("section").notNull(),
+  date: date("date").notNull(),
+  period: varchar("period").notNull(),
+  reference: varchar("reference"),
+  amount: doublePrecision("amount").notNull(),
+  status: varchar("status").notNull(),
+  createdBy: integer("created_by")
+    .references((): AnyPgColumn => Users.id)
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const Leaves = pgTable("leaves", {
   id: serial("id").primaryKey(),
   userId: integer("user_id")

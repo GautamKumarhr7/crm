@@ -18,6 +18,7 @@ import {
   Projects,
   Quotations,
   Sites,
+  Tds,
   Vouchers,
   Tenders,
   Users,
@@ -102,6 +103,7 @@ export type InvoiceModel = InferSelectModel<typeof Invoices>;
 export type ProcurementModel = InferSelectModel<typeof Procurements>;
 export type QuotationModel = InferSelectModel<typeof Quotations>;
 export type VoucherModel = InferSelectModel<typeof Vouchers>;
+export type TdsModel = InferSelectModel<typeof Tds>;
 export type TenderModel = InferSelectModel<typeof Tenders>;
 export type VendorModel = InferSelectModel<typeof Vendors>;
 export type ContractModel = InferSelectModel<typeof Contracts>;
@@ -218,6 +220,28 @@ export type CreateVoucherInput = {
   tdsDeductions?: number;
   secondaryPartyAccount?: string;
   narrationRemarks?: string;
+};
+
+export type CreateTdsInput = {
+  tdsId?: string;
+  vendorId?: number;
+  section?: string;
+  date?: string;
+  period?: string;
+  reference?: string;
+  amount?: number;
+  status?: string;
+};
+
+export type UpdateTdsInput = {
+  tdsId?: string;
+  vendorId?: number;
+  section?: string;
+  date?: string;
+  period?: string;
+  reference?: string;
+  amount?: number;
+  status?: string;
 };
 
 export type UpdateVoucherInput = {
