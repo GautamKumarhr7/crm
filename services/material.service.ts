@@ -65,6 +65,30 @@ export async function createMaterialService(
     };
   }
 
+  if (!input.type?.trim()) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Type is required",
+    };
+  }
+
+  if (input.type.trim() !== "owned" && input.type.trim() !== "hired") {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Type must be owned or hired",
+    };
+  }
+
+  if (!input.purchaseDate?.trim()) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "Purchase date is required",
+    };
+  }
+
   const material = await createMaterial(
     {
       materialName: input.materialName.trim(),
@@ -73,6 +97,10 @@ export async function createMaterialService(
       quantity: input.quantity,
       quantityType: input.quantityType.trim(),
       avgPurchaseRate: input.avgPurchaseRate,
+      type: input.type.trim(),
+      purchaseDate: input.purchaseDate.trim(),
+      status: input.status?.trim() || "running",
+      isverified: input.isverified ?? false,
     },
     createdBy,
   );
@@ -139,6 +167,18 @@ export async function updateMaterialService(
     };
   }
 
+  if (input.type !== undefined) {
+    const normalizedType = input.type.trim();
+
+    if (normalizedType !== "owned" && normalizedType !== "hired") {
+      return {
+        ok: false,
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: "Type must be owned or hired",
+      };
+    }
+  }
+
   const material = await getMaterialById(id);
 
   if (!material) {
@@ -163,6 +203,14 @@ export async function updateMaterialService(
     }),
     ...(input.avgPurchaseRate !== undefined && {
       avgPurchaseRate: input.avgPurchaseRate,
+    }),
+    ...(input.type?.trim() && { type: input.type.trim() }),
+    ...(input.purchaseDate?.trim() && {
+      purchaseDate: input.purchaseDate,
+    }),
+    ...(input.status?.trim() && { status: input.status.trim() }),
+    ...(input.isverified !== undefined && {
+      isverified: input.isverified,
     }),
   });
 

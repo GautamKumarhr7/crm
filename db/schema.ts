@@ -132,6 +132,10 @@ export const Materials = pgTable("materials", {
   quantity: doublePrecision("quantity").notNull(),
   quantityType: varchar("quantity_type").notNull(),
   avgPurchaseRate: doublePrecision("avg_purchase_rate").notNull(),
+  type: varchar("type").notNull(),
+  purchaseDate: date("purchase_date").notNull(),
+  status: varchar("status").notNull().default("running"),
+  isverified: boolean("is_verified").notNull().default(false),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)
     .notNull(),

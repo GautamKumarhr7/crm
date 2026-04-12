@@ -28,6 +28,10 @@ export async function createMaterial(
     quantity: number;
     quantityType: string;
     avgPurchaseRate: number;
+    type: string;
+    purchaseDate: string;
+    status: string;
+    isverified: boolean;
   },
   createdBy: number,
 ): Promise<MaterialModel> {
@@ -38,6 +42,10 @@ export async function createMaterial(
     quantity: input.quantity,
     quantityType: input.quantityType,
     avgPurchaseRate: input.avgPurchaseRate,
+    type: input.type,
+    purchaseDate: input.purchaseDate,
+    status: input.status,
+    isverified: input.isverified,
     createdBy,
   };
 
@@ -65,6 +73,14 @@ export async function updateMaterial(
       ...(input.quantityType && { quantityType: input.quantityType }),
       ...(input.avgPurchaseRate !== undefined && {
         avgPurchaseRate: input.avgPurchaseRate,
+      }),
+      ...(input.type?.trim() && { type: input.type.trim() }),
+      ...(input.purchaseDate?.trim() && {
+        purchaseDate: input.purchaseDate,
+      }),
+      ...(input.status?.trim() && { status: input.status.trim() }),
+      ...(input.isverified !== undefined && {
+        isverified: input.isverified,
       }),
     })
     .where(eq(Materials.id, id))

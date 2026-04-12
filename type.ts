@@ -300,6 +300,10 @@ export type CreateMaterialInput = {
   quantity?: number;
   quantityType?: string;
   avgPurchaseRate?: number;
+  type?: string;
+  purchaseDate?: string;
+  status?: string;
+  isverified?: boolean;
 };
 
 export type UpdateMaterialInput = {
@@ -309,6 +313,10 @@ export type UpdateMaterialInput = {
   quantity?: number;
   quantityType?: string;
   avgPurchaseRate?: number;
+  type?: string;
+  purchaseDate?: string;
+  status?: string;
+  isverified?: boolean;
 };
 
 export type CreateEquipmentInput = {
