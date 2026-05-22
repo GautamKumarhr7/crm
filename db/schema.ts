@@ -276,6 +276,7 @@ export const Vouchers = pgTable("vouchers", {
   type: varchar("type").notNull(),
   date: date("date").notNull(),
   amount: doublePrecision("amount").notNull(),
+  gst: integer("gst").notNull().default(0),
   tdsDeductions: doublePrecision("tds_deductions").notNull(),
   secondaryPartyAccount: varchar("secondary_party_account").notNull(),
   narrationRemarks: varchar("narration_remarks").notNull(),
