@@ -33,46 +33,13 @@ export async function createVoucherService(
     };
   }
 
-  if (input.amount === undefined || input.amount <= 0) {
-    return {
-      ok: false,
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: "Amount must be greater than 0",
-    };
-  }
-
-  if (input.tdsDeductions === undefined || input.tdsDeductions < 0) {
-    return {
-      ok: false,
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: "TDS / Deductions is required",
-    };
-  }
-
-  if (!input.secondaryPartyAccount?.trim()) {
-    return {
-      ok: false,
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: "Secondary party / account is required",
-    };
-  }
-
-  if (!input.narrationRemarks?.trim()) {
-    return {
-      ok: false,
-      status: HTTP_STATUS.BAD_REQUEST,
-      message: "Narration / remarks is required",
-    };
-  }
-
   const voucher = await createVoucher(
     {
       type: input.type.trim(),
       date: input.date.trim(),
-      amount: input.amount,
-      tdsDeductions: input.tdsDeductions,
-      secondaryPartyAccount: input.secondaryPartyAccount.trim(),
-      narrationRemarks: input.narrationRemarks.trim(),
+      ...(input.partyId !== undefined && { partyId: input.partyId }),
+      ...(input.materialId !== undefined && { materialId: input.materialId }),
+      ...(input.quantity !== undefined && { quantity: input.quantity }),
     },
     createdBy,
   );
@@ -123,19 +90,38 @@ export async function updateVoucherService(
   id: number,
   input: UpdateVoucherInput,
 ): Promise<ServiceResult<{ message: string; voucher: VoucherModel }>> {
-  if (input.amount !== undefined && input.amount <= 0) {
+  if (
+    input.partyId !== undefined &&
+    (!Number.isInteger(input.partyId) || input.partyId <= 0)
+  ) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Amount must be greater than 0",
+      message: "partyId must be a positive integer",
     };
   }
 
-  if (input.tdsDeductions !== undefined && input.tdsDeductions < 0) {
+  if (
+    input.materialId !== undefined &&
+    (!Number.isInteger(input.materialId) || input.materialId <= 0)
+  ) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "TDS / Deductions is required",
+      message: "materialId must be a positive integer",
+    };
+  }
+
+  if (
+    input.quantity !== undefined &&
+    (typeof input.quantity !== "number" ||
+      Number.isNaN(input.quantity) ||
+      input.quantity <= 0)
+  ) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "quantity must be a number greater than 0",
     };
   }
 
@@ -152,16 +138,9 @@ export async function updateVoucherService(
   const updated = await updateVoucher(id, {
     ...(input.type?.trim() && { type: input.type.trim() }),
     ...(input.date?.trim() && { date: input.date.trim() }),
-    ...(input.amount !== undefined && { amount: input.amount }),
-    ...(input.tdsDeductions !== undefined && {
-      tdsDeductions: input.tdsDeductions,
-    }),
-    ...(input.secondaryPartyAccount?.trim() && {
-      secondaryPartyAccount: input.secondaryPartyAccount.trim(),
-    }),
-    ...(input.narrationRemarks?.trim() && {
-      narrationRemarks: input.narrationRemarks.trim(),
-    }),
+    ...(input.partyId !== undefined && { partyId: input.partyId }),
+    ...(input.materialId !== undefined && { materialId: input.materialId }),
+    ...(input.quantity !== undefined && { quantity: input.quantity }),
   });
 
   if (!updated) {

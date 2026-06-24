@@ -33,11 +33,31 @@ export async function createMaterialService(
     };
   }
 
-  if (!input.warehouseLocation?.trim()) {
+  // warehouseLocation is optional now
+
+  if (
+    input.sgstRate !== undefined &&
+    (typeof input.sgstRate !== "number" ||
+      Number.isNaN(input.sgstRate) ||
+      input.sgstRate < 0)
+  ) {
     return {
       ok: false,
       status: HTTP_STATUS.BAD_REQUEST,
-      message: "Warehouse location is required",
+      message: "sgstRate must be a non-negative number",
+    };
+  }
+
+  if (
+    input.cgstRate !== undefined &&
+    (typeof input.cgstRate !== "number" ||
+      Number.isNaN(input.cgstRate) ||
+      input.cgstRate < 0)
+  ) {
+    return {
+      ok: false,
+      status: HTTP_STATUS.BAD_REQUEST,
+      message: "cgstRate must be a non-negative number",
     };
   }
 
@@ -93,7 +113,11 @@ export async function createMaterialService(
     {
       materialName: input.materialName.trim(),
       category: input.category.trim(),
-      warehouseLocation: input.warehouseLocation.trim(),
+      ...(input.warehouseLocation?.trim() && {
+        warehouseLocation: input.warehouseLocation.trim(),
+      }),
+      ...(input.sgstRate !== undefined && { sgstRate: input.sgstRate }),
+      ...(input.cgstRate !== undefined && { cgstRate: input.cgstRate }),
       quantity: input.quantity,
       quantityType: input.quantityType.trim(),
       avgPurchaseRate: input.avgPurchaseRate,
@@ -194,8 +218,8 @@ export async function updateMaterialService(
       materialName: input.materialName.trim(),
     }),
     ...(input.category?.trim() && { category: input.category.trim() }),
-    ...(input.warehouseLocation?.trim() && {
-      warehouseLocation: input.warehouseLocation.trim(),
+    ...(input.warehouseLocation !== undefined && {
+      warehouseLocation: input.warehouseLocation?.trim(),
     }),
     ...(input.quantity !== undefined && { quantity: input.quantity }),
     ...(input.quantityType?.trim() && {
@@ -208,6 +232,8 @@ export async function updateMaterialService(
     ...(input.purchaseDate?.trim() && {
       purchaseDate: input.purchaseDate,
     }),
+    ...(input.sgstRate !== undefined && { sgstRate: input.sgstRate }),
+    ...(input.cgstRate !== undefined && { cgstRate: input.cgstRate }),
     ...(input.status?.trim() && { status: input.status.trim() }),
     ...(input.isverified !== undefined && {
       isverified: input.isverified,

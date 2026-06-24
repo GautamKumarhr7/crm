@@ -24,7 +24,9 @@ export async function createMaterial(
   input: CreateMaterialInput & {
     materialName: string;
     category: string;
-    warehouseLocation: string;
+    warehouseLocation?: string;
+    sgstRate?: number;
+    cgstRate?: number;
     quantity: number;
     quantityType: string;
     avgPurchaseRate: number;
@@ -38,7 +40,9 @@ export async function createMaterial(
   const payload: typeof Materials.$inferInsert = {
     materialName: input.materialName,
     category: input.category,
-    warehouseLocation: input.warehouseLocation,
+    ...(input.warehouseLocation !== undefined && {
+      warehouseLocation: input.warehouseLocation,
+    }),
     quantity: input.quantity,
     quantityType: input.quantityType,
     avgPurchaseRate: input.avgPurchaseRate,
@@ -46,6 +50,8 @@ export async function createMaterial(
     purchaseDate: input.purchaseDate,
     status: input.status,
     isverified: input.isverified,
+    sgstRate: input.sgstRate ?? 0,
+    cgstRate: input.cgstRate ?? 0,
     createdBy,
   };
 
@@ -66,7 +72,7 @@ export async function updateMaterial(
     .set({
       ...(input.materialName && { materialName: input.materialName }),
       ...(input.category && { category: input.category }),
-      ...(input.warehouseLocation && {
+      ...(input.warehouseLocation !== undefined && {
         warehouseLocation: input.warehouseLocation,
       }),
       ...(input.quantity !== undefined && { quantity: input.quantity }),
@@ -74,6 +80,8 @@ export async function updateMaterial(
       ...(input.avgPurchaseRate !== undefined && {
         avgPurchaseRate: input.avgPurchaseRate,
       }),
+      ...(input.sgstRate !== undefined && { sgstRate: input.sgstRate }),
+      ...(input.cgstRate !== undefined && { cgstRate: input.cgstRate }),
       ...(input.type?.trim() && { type: input.type.trim() }),
       ...(input.purchaseDate?.trim() && {
         purchaseDate: input.purchaseDate,

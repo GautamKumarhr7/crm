@@ -128,7 +128,7 @@ export const Materials = pgTable("materials", {
   id: serial("id").primaryKey(),
   materialName: varchar("material_name").notNull(),
   category: varchar("category").notNull(),
-  warehouseLocation: varchar("warehouse_location").notNull(),
+  warehouseLocation: varchar("warehouse_location"),
   quantity: doublePrecision("quantity").notNull(),
   quantityType: varchar("quantity_type").notNull(),
   avgPurchaseRate: doublePrecision("avg_purchase_rate").notNull(),
@@ -136,6 +136,8 @@ export const Materials = pgTable("materials", {
   purchaseDate: date("purchase_date").notNull(),
   status: varchar("status").notNull().default("running"),
   isverified: boolean("is_verified").notNull().default(false),
+  sgstRate: doublePrecision("sgst_rate").default(0).notNull(),
+  cgstRate: doublePrecision("cgst_rate").default(0).notNull(),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)
     .notNull(),
@@ -143,6 +145,19 @@ export const Materials = pgTable("materials", {
     .defaultNow()
     .$onUpdateFn(() => new Date()),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const Parties = pgTable("parties", {
+  id: serial("id").primaryKey(),
+  partyName: varchar("party_name").notNull(),
+  address: varchar("address"),
+  state: varchar("state"),
+  city: varchar("city"),
+  pincode: varchar("pincode"),
+  gstin: varchar("gstin").unique(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  createdBy: integer("created_by").references((): AnyPgColumn => Users.id),
 });
 
 export const Equipments = pgTable("equipments", {
@@ -275,11 +290,11 @@ export const Vouchers = pgTable("vouchers", {
   id: serial("id").primaryKey(),
   type: varchar("type").notNull(),
   date: date("date").notNull(),
-  amount: doublePrecision("amount").notNull(),
-  gst: integer("gst").notNull().default(0),
-  tdsDeductions: doublePrecision("tds_deductions").notNull(),
-  secondaryPartyAccount: varchar("secondary_party_account").notNull(),
-  narrationRemarks: varchar("narration_remarks").notNull(),
+  partyId: integer("party_id").references((): AnyPgColumn => Parties.id),
+  materialId: integer("material_id").references(
+    (): AnyPgColumn => Materials.id,
+  ),
+  quantity: doublePrecision("quantity"),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)
     .notNull(),

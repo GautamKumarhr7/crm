@@ -21,6 +21,7 @@ import {
   Tds,
   Vouchers,
   Tenders,
+  Parties,
   Users,
   Vendors,
   Works,
@@ -216,10 +217,9 @@ export type CreateQuotationInput = {
 export type CreateVoucherInput = {
   type?: string;
   date?: string;
-  amount?: number;
-  tdsDeductions?: number;
-  secondaryPartyAccount?: string;
-  narrationRemarks?: string;
+  partyId?: number | undefined;
+  materialId?: number | undefined;
+  quantity?: number | undefined;
 };
 
 export type CreateTdsInput = {
@@ -247,10 +247,9 @@ export type UpdateTdsInput = {
 export type UpdateVoucherInput = {
   type?: string;
   date?: string;
-  amount?: number;
-  tdsDeductions?: number;
-  secondaryPartyAccount?: string;
-  narrationRemarks?: string;
+  partyId?: number | undefined;
+  materialId?: number | undefined;
+  quantity?: number | undefined;
 };
 
 export type UpdateQuotationInput = {
@@ -297,6 +296,8 @@ export type CreateMaterialInput = {
   materialName?: string;
   category?: string;
   warehouseLocation?: string;
+  sgstRate?: number;
+  cgstRate?: number;
   quantity?: number;
   quantityType?: string;
   avgPurchaseRate?: number;
@@ -310,6 +311,8 @@ export type UpdateMaterialInput = {
   materialName?: string;
   category?: string;
   warehouseLocation?: string;
+  sgstRate?: number;
+  cgstRate?: number;
   quantity?: number;
   quantityType?: string;
   avgPurchaseRate?: number;
@@ -317,6 +320,27 @@ export type UpdateMaterialInput = {
   purchaseDate?: string;
   status?: string;
   isverified?: boolean;
+};
+
+export type PartyModel = InferSelectModel<typeof Parties>;
+
+export type CreatePartyInput = {
+  partyName?: string;
+  address?: string | undefined;
+  state?: string | undefined;
+  city?: string | undefined;
+  pincode?: string | undefined;
+  gstin?: string | undefined;
+};
+
+export type UpdatePartyInput = {
+  partyName?: string;
+  address?: string | undefined;
+  state?: string | undefined;
+  city?: string | undefined;
+  pincode?: string | undefined;
+  gstin?: string | undefined;
+  isDeleted?: boolean | undefined;
 };
 
 export type CreateEquipmentInput = {

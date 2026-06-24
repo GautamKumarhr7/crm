@@ -22,20 +22,15 @@ export async function createVoucher(
   input: CreateVoucherInput & {
     type: string;
     date: string;
-    amount: number;
-    tdsDeductions: number;
-    secondaryPartyAccount: string;
-    narrationRemarks: string;
   },
   createdBy: number,
 ): Promise<VoucherModel> {
   const payload: typeof Vouchers.$inferInsert = {
     type: input.type,
     date: input.date,
-    amount: input.amount,
-    tdsDeductions: input.tdsDeductions,
-    secondaryPartyAccount: input.secondaryPartyAccount,
-    narrationRemarks: input.narrationRemarks,
+    ...(input.partyId !== undefined && { partyId: input.partyId }),
+    ...(input.materialId !== undefined && { materialId: input.materialId }),
+    ...(input.quantity !== undefined && { quantity: input.quantity }),
     createdBy,
   };
 
@@ -56,16 +51,9 @@ export async function updateVoucher(
     .set({
       ...(input.type && { type: input.type }),
       ...(input.date && { date: input.date }),
-      ...(input.amount !== undefined && { amount: input.amount }),
-      ...(input.tdsDeductions !== undefined && {
-        tdsDeductions: input.tdsDeductions,
-      }),
-      ...(input.secondaryPartyAccount && {
-        secondaryPartyAccount: input.secondaryPartyAccount,
-      }),
-      ...(input.narrationRemarks && {
-        narrationRemarks: input.narrationRemarks,
-      }),
+      ...(input.partyId !== undefined && { partyId: input.partyId }),
+      ...(input.materialId !== undefined && { materialId: input.materialId }),
+      ...(input.quantity !== undefined && { quantity: input.quantity }),
     })
     .where(eq(Vouchers.id, id))
     .returning();
