@@ -40,6 +40,10 @@ export async function createVoucherService(
       ...(input.partyId !== undefined && { partyId: input.partyId }),
       ...(input.materialId !== undefined && { materialId: input.materialId }),
       ...(input.quantity !== undefined && { quantity: input.quantity }),
+      ...(input.amount !== undefined && { amount: input.amount }),
+      ...(input.sgst !== undefined && { sgst: input.sgst }),
+      ...(input.cgst !== undefined && { cgst: input.cgst }),
+      ...(input.invoiceNo !== undefined && { invoiceNo: input.invoiceNo }),
     },
     createdBy,
   );
@@ -141,6 +145,10 @@ export async function updateVoucherService(
     ...(input.partyId !== undefined && { partyId: input.partyId }),
     ...(input.materialId !== undefined && { materialId: input.materialId }),
     ...(input.quantity !== undefined && { quantity: input.quantity }),
+    ...(input.amount !== undefined && { amount: input.amount }),
+    ...(input.sgst !== undefined && { sgst: input.sgst }),
+    ...(input.cgst !== undefined && { cgst: input.cgst }),
+    ...(input.invoiceNo !== undefined && { invoiceNo: input.invoiceNo }),
   });
 
   if (!updated) {

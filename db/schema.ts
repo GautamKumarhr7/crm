@@ -295,6 +295,10 @@ export const Vouchers = pgTable("vouchers", {
     (): AnyPgColumn => Materials.id,
   ),
   quantity: doublePrecision("quantity"),
+  amount: doublePrecision("amount"),
+  sgst: doublePrecision("sgst"),
+  cgst: doublePrecision("cgst"),
+  invoiceNo: varchar("invoice_no"),
   createdBy: integer("created_by")
     .references((): AnyPgColumn => Users.id)
     .notNull(),

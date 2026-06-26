@@ -220,6 +220,10 @@ export type CreateVoucherInput = {
   partyId?: number | undefined;
   materialId?: number | undefined;
   quantity?: number | undefined;
+  amount?: number | undefined;
+  sgst?: number | undefined;
+  cgst?: number | undefined;
+  invoiceNo?: string | undefined;
 };
 
 export type CreateTdsInput = {
@@ -250,6 +254,10 @@ export type UpdateVoucherInput = {
   partyId?: number | undefined;
   materialId?: number | undefined;
   quantity?: number | undefined;
+  amount?: number | undefined;
+  sgst?: number | undefined;
+  cgst?: number | undefined;
+  invoiceNo?: string | undefined;
 };
 
 export type UpdateQuotationInput = {
